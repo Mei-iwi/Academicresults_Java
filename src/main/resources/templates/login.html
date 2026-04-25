@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="route" content="/login">
+
+  <title>Đăng nhập | Quản lý điểm học tập</title>
+
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+
+  <link rel="stylesheet" href="../css/app.css" th:href="@{/css/app.css}">
+
+  <link rel="stylesheet" href="../css/login.css" th:href="@{/css/login.css}">
+</head>
+
+<body class="auth-page">
+
+  <main class="auth-wrapper">
+    <section class="auth-card">
+
+      <!-- LEFT PANEL -->
+      <section class="auth-hero">
+        <div class="auth-hero-content">
+
+          <div class="auth-brand">
+            <div class="auth-brand-logo">KQ</div>
+            <div>
+              <div class="auth-brand-name">QUẢN LÝ ĐIỂM</div>
+              <div class="auth-brand-subtitle">Academic Result Management</div>
+            </div>
+          </div>
+
+          <div class="auth-hero-main">
+            <span class="auth-chip">Điểm học tập • Bảng điểm • Kết quả</span>
+
+            <h1>Theo dõi kết quả học tập chính xác và rõ ràng.</h1>
+
+            <p>
+              Quản lý điểm theo sinh viên, môn học, lớp học phần và học kỳ
+              trên một giao diện thống nhất.
+            </p>
+          </div>
+
+          <div class="auth-feature-list">
+            <div class="auth-feature-item">
+              <span>✓</span>
+              <p>Nhập và cập nhật điểm học tập</p>
+            </div>
+
+            <div class="auth-feature-item">
+              <span>✓</span>
+              <p>Công bố bảng điểm theo học kỳ</p>
+            </div>
+
+            <div class="auth-feature-item">
+              <span>✓</span>
+              <p>Tra cứu kết quả nhanh chóng</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL -->
+      <section class="auth-form-panel">
+        <div class="auth-form-box">
+
+          <div class="auth-mobile-brand">
+            <div class="auth-brand-logo">KQ</div>
+            <div>
+              <div class="auth-brand-name">QUẢN LÝ ĐIỂM</div>
+              <div class="auth-brand-subtitle">Đăng nhập tài khoản</div>
+            </div>
+          </div>
+
+          <div class="auth-form-heading">
+            <h2>Đăng nhập</h2>
+            <p>Truy cập bảng điểm và dữ liệu học tập.</p>
+          </div>
+
+          <div class="alert alert-danger auth-alert" th:if="${param.error}">
+            Tài khoản hoặc mật khẩu không chính xác.
+          </div>
+
+          <div class="alert alert-success auth-alert" th:if="${param.logout}">
+            Đăng xuất thành công.
+          </div>
+
+          <form method="post" action="/login" th:action="@{/login}" class="auth-form">
+
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="form-group-custom">
+              <label for="username">Tên đăng nhập</label>
+
+              <div class="input-with-icon">
+                <span class="input-icon">👤</span>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập"
+                  autocomplete="username" autofocus required>
+              </div>
+            </div>
+
+            <div class="form-group-custom">
+              <label for="password">Mật khẩu</label>
+
+              <div class="input-with-icon">
+                <span class="input-icon">🔒</span>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu"
+                  autocomplete="current-password" required>
+              </div>
+            </div>
+
+            <div class="auth-options">
+              <label class="remember-box">
+                <input class="form-check-input" type="checkbox" name="remember-me">
+                <span>Ghi nhớ đăng nhập</span>
+              </label>
+
+              <a href="#" class="forgot-link">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn-login">
+              <span>Đăng nhập</span>
+              <span>→</span>
+            </button>
+          </form>
+
+          <div class="auth-demo-box">
+            <div class="auth-demo-title">Phân quyền truy cập</div>
+
+            <div class="auth-demo-routes">
+              <code>Admin</code>
+              <code>Nhân viên đào tạo</code>
+              <code>Sinh viên</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script src="../js/app.js" th:src="@{/js/app.js}"></script>
+
+</body>
+
+</html>

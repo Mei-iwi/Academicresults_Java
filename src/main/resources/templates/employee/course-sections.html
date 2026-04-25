@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="route" content="/employee/course-sections">
+  <title>Quản lý lớp học phần | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+</head>
+
+<body data-role="employee">
+  <div class="app-shell">
+
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-employee" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">KQ</div>
+        <div>
+          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+        </div>
+      </div>
+      <div class="sidebar-body">
+        <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
+        <nav class="sidebar-nav">
+          <a class="" href="/employee/departments" th:href="@{/employee/departments}"><span
+              class="icon">🏢</span><span>Khoa</span></a>
+          <a class="" href="/employee/majors" th:href="@{/employee/majors}"><span
+              class="icon">🧭</span><span>Ngành</span></a>
+          <a class="" href="/employee/classes" th:href="@{/employee/classes}"><span
+              class="icon">🏫</span><span>Lớp</span></a>
+          <a class="" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh
+              viên</span></a>
+          <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
+              học</span></a>
+          <a class="" href="/employee/academic-years" th:href="@{/employee/academic-years}"><span
+              class="icon">📅</span><span>Năm học</span></a>
+          <a class="" href="/employee/semesters" th:href="@{/employee/semesters}"><span class="icon">🗓</span><span>Học
+              kỳ</span></a>
+          <a class="active" href="/employee/course-sections" th:href="@{/employee/course-sections}"><span
+              class="icon">🧩</span><span>Lớp học phần</span></a>
+          <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Nhập
+              điểm</span></a>
+          <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
+              cáo</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+        </form>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+          <div>
+            <h1 class="page-title">Quản lý lớp học phần</h1>
+            <div class="page-subtitle">Mở lớp học phần, gán môn/học kỳ/lớp.</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 ms-auto text-end">
+          <span class="route-pill">/employee/course-sections</span>
+          <span class="badge bg-light">Quản lý đào tạo</span>
+        </div>
+      </header>
+      <section class="content">
+        <div class="card mb-4">
+          <div class="card-header"><strong>Mở lớp học phần</strong></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3 mb-3"><label class="form-label required">Mã lớp học phần</label><input
+                  class="form-control" value="JAVA01"></div>
+              <div class="col-md-3 mb-3"><label class="form-label required">Môn học</label><select class="form-select">
+                  <option>Công nghệ Java</option>
+                  <option>Hệ cơ sở dữ liệu</option>
+                </select></div>
+              <div class="col-md-3 mb-3"><label class="form-label required">Học kỳ</label><select class="form-select">
+                  <option>HK1 2025-2026</option>
+                  <option>HK2 2025-2026</option>
+                </select></div>
+              <div class="col-md-3 mb-3"><label class="form-label required">Lớp</label><select class="form-select">
+                  <option>14DHTH01</option>
+                  <option>14DHTH02</option>
+                </select></div>
+              <div class="col-md-3 mb-3"><label class="form-label">Số lượng dự kiến</label><input type="number"
+                  class="form-control" value="45"></div>
+              <div class="col-md-9 mb-3"><label class="form-label">Ghi chú</label><input class="form-control"
+                  placeholder="Ghi chú lịch học/nhóm nếu có"></div>
+            </div><button class="btn btn-primary" data-action="save">Lưu lớp học phần</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header d-flex justify-content-between"><strong>Danh sách lớp học phần</strong><input
+              class="form-control" style="max-width:260px" data-table-search="#sectionTable"
+              placeholder="Tìm lớp học phần"></div>
+          <div class="card-body table-responsive">
+            <table id="sectionTable" class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Mã LHP</th>
+                  <th>Môn</th>
+                  <th>Học kỳ</th>
+                  <th>Lớp</th>
+                  <th>Sĩ số</th>
+                  <th>Trạng thái điểm</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>JAVA01</td>
+                  <td>Công nghệ Java</td>
+                  <td>HK1 2025-2026</td>
+                  <td>14DHTH01</td>
+                  <td>45</td>
+                  <td><span class="badge bg-warning">Nháp</span></td>
+                  <td><a class="btn btn-sm btn-primary" href="/employee/results">Nhập điểm</a></td>
+                </tr>
+                <tr>
+                  <td>CSDL02</td>
+                  <td>Hệ cơ sở dữ liệu</td>
+                  <td>HK1 2025-2026</td>
+                  <td>14DHTH02</td>
+                  <td>42</td>
+                  <td><span class="badge bg-success">Công bố</span></td>
+                  <td><a class="btn btn-sm btn-secondary" href="/employee/results-publish">Trạng thái</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+</body>
+
+</html>

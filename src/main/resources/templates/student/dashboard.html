@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="route" content="/student/dashboard">
+  <title>Dashboard sinh viên | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+</head>
+
+<body data-role="student">
+  <div class="app-shell">
+
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-student" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">KQ</div>
+        <div>
+          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-subtitle">Sinh viên</div>
+        </div>
+      </div>
+      <div class="sidebar-body">
+        <div class="sidebar-section">Menu Sinh viên</div>
+        <nav class="sidebar-nav">
+          <a class="active" href="/student/dashboard" th:href="@{/student/dashboard}"><span
+              class="icon">🏠</span><span>Trang chủ</span></a>
+          <a class="" href="/student/results" th:href="@{/student/results}"><span class="icon">📄</span><span>Bảng điểm
+              học kỳ</span></a>
+          <a class="" href="/student/transcript" th:href="@{/student/transcript}"><span class="icon">🎓</span><span>Bảng
+              điểm tổng hợp</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+        </form>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+          <div>
+            <h1 class="page-title">Dashboard sinh viên</h1>
+            <div class="page-subtitle">Thông tin nhanh và học kỳ gần nhất.</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 ms-auto text-end">
+          <span class="route-pill">/student/dashboard</span>
+          <span class="badge bg-light">Tra cứu kết quả</span>
+        </div>
+      </header>
+      <section class="content">
+        <div class="row mb-4">
+          <div class="col-md-4 mb-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Điểm TB học kỳ gần nhất</div>
+                <div class="metric-value">7.45</div><span class="badge bg-success">Đạt</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Số môn đã công bố</div>
+                <div class="metric-value">5</div><span class="badge bg-primary">HK1 2025-2026</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Tín chỉ tích lũy mẫu</div>
+                <div class="metric-value">68</div><span class="badge bg-info">Theo dữ liệu công bố</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><strong>Thông tin học kỳ gần nhất</strong></div>
+          <div class="card-body table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Môn</th>
+                  <th>Tín chỉ</th>
+                  <th>Điểm tổng kết</th>
+                  <th>Kết quả</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Công nghệ Java</td>
+                  <td>3</td>
+                  <td>7.9</td>
+                  <td><span class="badge bg-success">Đạt</span></td>
+                </tr>
+                <tr>
+                  <td>Hệ cơ sở dữ liệu</td>
+                  <td>3</td>
+                  <td>6.8</td>
+                  <td><span class="badge bg-success">Đạt</span></td>
+                </tr>
+                <tr>
+                  <td>Lập trình mạng</td>
+                  <td>3</td>
+                  <td>Chưa công bố</td>
+                  <td><span class="badge bg-warning">Chờ điểm</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+</body>
+
+</html>

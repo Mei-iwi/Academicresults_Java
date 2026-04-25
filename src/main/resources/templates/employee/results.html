@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="route" content="/employee/results">
+  <title>Nhập điểm | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+</head>
+
+<body data-role="employee">
+  <div class="app-shell">
+
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-employee" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">KQ</div>
+        <div>
+          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+        </div>
+      </div>
+      <div class="sidebar-body">
+        <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
+        <nav class="sidebar-nav">
+          <a class="" href="/employee/departments" th:href="@{/employee/departments}"><span
+              class="icon">🏢</span><span>Khoa</span></a>
+          <a class="" href="/employee/majors" th:href="@{/employee/majors}"><span
+              class="icon">🧭</span><span>Ngành</span></a>
+          <a class="" href="/employee/classes" th:href="@{/employee/classes}"><span
+              class="icon">🏫</span><span>Lớp</span></a>
+          <a class="" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh
+              viên</span></a>
+          <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
+              học</span></a>
+          <a class="" href="/employee/academic-years" th:href="@{/employee/academic-years}"><span
+              class="icon">📅</span><span>Năm học</span></a>
+          <a class="" href="/employee/semesters" th:href="@{/employee/semesters}"><span class="icon">🗓</span><span>Học
+              kỳ</span></a>
+          <a class="" href="/employee/course-sections" th:href="@{/employee/course-sections}"><span
+              class="icon">🧩</span><span>Lớp học phần</span></a>
+          <a class="active" href="/employee/results" th:href="@{/employee/results}"><span
+              class="icon">📝</span><span>Nhập điểm</span></a>
+          <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
+              cáo</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+        </form>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+          <div>
+            <h1 class="page-title">Nhập điểm</h1>
+            <div class="page-subtitle">Chọn học kỳ/lớp học phần, nhập điểm từng sinh viên và lưu nháp.</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 ms-auto text-end">
+          <span class="route-pill">/employee/results</span>
+          <span class="badge bg-light">Quản lý đào tạo</span>
+        </div>
+      </header>
+      <section class="content">
+        <div class="card mb-4">
+          <div class="card-header"><strong>Chọn lớp học phần để nhập điểm</strong></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4 mb-3"><label class="form-label required">Học kỳ</label><select class="form-select">
+                  <option>HK1 2025-2026</option>
+                  <option>HK2 2025-2026</option>
+                </select></div>
+              <div class="col-md-4 mb-3"><label class="form-label required">Lớp học phần</label><select
+                  class="form-select">
+                  <option>JAVA01 - Công nghệ Java</option>
+                  <option>CSDL02 - Hệ cơ sở dữ liệu</option>
+                </select></div>
+              <div class="col-md-4 mb-3"><label class="form-label">Trạng thái</label><input class="form-control"
+                  value="Đang nhập nháp" readonly></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header d-flex justify-content-between"><strong>Bảng nhập điểm từng sinh viên</strong>
+            <div class="action-group"><button class="btn btn-warning" data-action="draft">Lưu nháp</button><a
+                class="btn btn-success" href="/employee/results-publish">Công bố/khóa điểm</a></div>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Mã SV</th>
+                  <th>Họ tên</th>
+                  <th>Chuyên cần</th>
+                  <th>Giữa kỳ</th>
+                  <th>Cuối kỳ</th>
+                  <th>Điểm tổng kết</th>
+                  <th>Ghi chú</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SV001</td>
+                  <td>Trần Thị B</td>
+                  <td><input class="form-control score-input" value="8.0"></td>
+                  <td><input class="form-control score-input" value="7.5"></td>
+                  <td><input class="form-control score-input" value="8.0"></td>
+                  <td><strong>7.9</strong></td>
+                  <td><input class="form-control" placeholder=""></td>
+                </tr>
+                <tr>
+                  <td>SV002</td>
+                  <td>Lê Văn C</td>
+                  <td><input class="form-control score-input" value="7.0"></td>
+                  <td><input class="form-control score-input" value="6.5"></td>
+                  <td><input class="form-control score-input" value="7.0"></td>
+                  <td><strong>6.8</strong></td>
+                  <td><input class="form-control" placeholder=""></td>
+                </tr>
+                <tr>
+                  <td>SV003</td>
+                  <td>Phạm Minh D</td>
+                  <td><input class="form-control score-input" value=""></td>
+                  <td><input class="form-control score-input" value=""></td>
+                  <td><input class="form-control score-input" value=""></td>
+                  <td><span class="text-muted">Chưa tính</span></td>
+                  <td><input class="form-control" value="Chưa nhập đủ"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="alert alert-info mb-0">Giao diện mẫu: backend Spring Boot cần kiểm tra điểm trong khoảng 0-10,
+              tính điểm tổng kết theo quy định nhóm chọn và chỉ cho sinh viên xem khi đã công bố.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+</body>
+
+</html>

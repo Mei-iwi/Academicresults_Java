@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="route" content="/employee/classes">
+  <title>Quản lý lớp | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+</head>
+
+<body data-role="employee">
+  <div class="app-shell">
+
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-employee" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">KQ</div>
+        <div>
+          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+        </div>
+      </div>
+      <div class="sidebar-body">
+        <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
+        <nav class="sidebar-nav">
+          <a class="" href="/employee/departments" th:href="@{/employee/departments}"><span
+              class="icon">🏢</span><span>Khoa</span></a>
+          <a class="" href="/employee/majors" th:href="@{/employee/majors}"><span
+              class="icon">🧭</span><span>Ngành</span></a>
+          <a class="active" href="/employee/classes" th:href="@{/employee/classes}"><span
+              class="icon">🏫</span><span>Lớp</span></a>
+          <a class="" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh
+              viên</span></a>
+          <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
+              học</span></a>
+          <a class="" href="/employee/academic-years" th:href="@{/employee/academic-years}"><span
+              class="icon">📅</span><span>Năm học</span></a>
+          <a class="" href="/employee/semesters" th:href="@{/employee/semesters}"><span class="icon">🗓</span><span>Học
+              kỳ</span></a>
+          <a class="" href="/employee/course-sections" th:href="@{/employee/course-sections}"><span
+              class="icon">🧩</span><span>Lớp học phần</span></a>
+          <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Nhập
+              điểm</span></a>
+          <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
+              cáo</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+        </form>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+          <div>
+            <h1 class="page-title">Quản lý lớp</h1>
+            <div class="page-subtitle">CRUD danh mục lớp phục vụ tổ chức đào tạo.</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 ms-auto text-end">
+          <span class="route-pill">/employee/classes</span>
+          <span class="badge bg-light">Quản lý đào tạo</span>
+        </div>
+      </header>
+      <section class="content">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <div class="card">
+              <div class="card-header"><strong>Form lớp</strong></div>
+              <div class="card-body">
+                <div class="mb-3"><label class="form-label required">Mã lớp</label><input class="form-control"
+                    value="14DHTH01"></div>
+                <div class="mb-3"><label class="form-label required">Tên lớp</label><input class="form-control"
+                    value="Đại học Tin học 01"></div>
+                <div class="mb-3"><label class="form-label">Ghi chú</label><textarea class="form-control" rows="3"
+                    placeholder="Ghi chú ngắn nếu cần"></textarea></div><button class="btn btn-primary"
+                  data-action="save">Lưu lớp</button><button class="btn btn-light">Làm mới</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 mb-4">
+            <div class="card">
+              <div class="card-header d-flex justify-content-between"><strong>Danh sách lớp</strong><input
+                  class="form-control" style="max-width:260px" data-table-search="#crudTable" placeholder="Tìm kiếm">
+              </div>
+              <div class="card-body table-responsive">
+                <table id="crudTable" class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Mã lớp</th>
+                      <th>Tên lớp</th>
+                      <th>Trạng thái</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>14DHTH01</td>
+                      <td>Đại học Tin học 01</td>
+                      <td><span class="badge bg-success">Khóa 2025</span></td>
+                      <td class="action-group"><button class="btn btn-sm btn-outline-primary">Sửa</button><button
+                          class="btn btn-sm btn-danger" data-action="delete">Xóa</button></td>
+                    </tr>
+                    <tr>
+                      <td>14DHTH0102</td>
+                      <td>Đại học Tin học 01 02</td>
+                      <td><span class="badge bg-secondary">Tạm ngưng</span></td>
+                      <td class="action-group"><button class="btn btn-sm btn-outline-primary">Sửa</button><button
+                          class="btn btn-sm btn-success" data-action="save">Bật lại</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+</body>
+
+</html>

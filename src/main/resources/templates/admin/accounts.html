@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="route" content="/admin/accounts">
+  <title>Quản lý tài khoản | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+</head>
+
+<body data-role="admin">
+  <div class="app-shell">
+
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-admin" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">KQ</div>
+        <div>
+          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-subtitle">Quản trị viên</div>
+        </div>
+      </div>
+      <div class="sidebar-body">
+        <div class="sidebar-section">Menu Quản trị viên</div>
+        <nav class="sidebar-nav">
+          <a class="" href="/admin/dashboard" th:href="@{/admin/dashboard}"><span class="icon">🏠</span><span>Tổng
+              quan</span></a>
+          <a class="active" href="/admin/accounts" th:href="@{/admin/accounts}"><span class="icon">👤</span><span>Tài
+              khoản</span></a>
+          <a class="" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh
+              viên</span></a>
+          <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
+              học</span></a>
+          <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Điểm học
+              tập</span></a>
+          <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
+              cáo</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+        </form>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+          <div>
+            <h1 class="page-title">Quản lý tài khoản</h1>
+            <div class="page-subtitle">Danh sách, thêm/sửa/khóa tài khoản và reset mật khẩu.</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 ms-auto text-end">
+          <span class="route-pill">/admin/accounts</span>
+          <span class="badge bg-light">Quản trị hệ thống</span>
+        </div>
+      </header>
+      <section class="content">
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between"><strong>Bộ lọc tài khoản</strong><button
+              class="btn btn-primary" data-open-modal="#accountModal">+ Thêm tài khoản</button></div>
+          <div class="card-body toolbar">
+            <div><label class="form-label">Từ khóa</label><input class="form-control" data-table-search="#accountTable"
+                placeholder="Tìm username, họ tên, email"></div>
+            <div><label class="form-label">Vai trò</label><select class="form-select">
+                <option>Tất cả</option>
+                <option>ADMIN</option>
+                <option>EMPLOYEE</option>
+                <option>STUDENT</option>
+              </select></div>
+            <div><label class="form-label">Trạng thái</label><select class="form-select">
+                <option>Tất cả</option>
+                <option>Hoạt động</option>
+                <option>Đã khóa</option>
+              </select></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><strong>Danh sách tài khoản</strong></div>
+          <div class="card-body table-responsive">
+            <table id="accountTable" class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Họ tên</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>admin</td>
+                  <td>Quản trị hệ thống</td>
+                  <td>admin@school.edu.vn</td>
+                  <td><span class="badge bg-danger">ADMIN</span></td>
+                  <td><span class="badge bg-success">Hoạt động</span></td>
+                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
+                      data-open-modal="#accountModal">Sửa</button><button class="btn btn-sm btn-warning"
+                      data-action="reset">Reset mật khẩu</button><button class="btn btn-sm btn-secondary"
+                      data-action="lock">Khóa</button></td>
+                </tr>
+                <tr>
+                  <td>gv001</td>
+                  <td>Nguyễn Văn A</td>
+                  <td>nva@school.edu.vn</td>
+                  <td><span class="badge bg-primary">EMPLOYEE</span></td>
+                  <td><span class="badge bg-success">Hoạt động</span></td>
+                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
+                      data-open-modal="#accountModal">Sửa</button><button class="btn btn-sm btn-warning"
+                      data-action="reset">Reset mật khẩu</button><button class="btn btn-sm btn-secondary"
+                      data-action="lock">Khóa</button></td>
+                </tr>
+                <tr>
+                  <td>sv001</td>
+                  <td>Trần Thị B</td>
+                  <td>sv001@school.edu.vn</td>
+                  <td><span class="badge bg-info">STUDENT</span></td>
+                  <td><span class="badge bg-secondary">Đã khóa</span></td>
+                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
+                      data-open-modal="#accountModal">Sửa</button><button class="btn btn-sm btn-warning"
+                      data-action="reset">Reset mật khẩu</button><button class="btn btn-sm btn-success"
+                      data-action="lock">Mở khóa</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal" id="accountModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header"><strong>Thêm / sửa tài khoản</strong><button class="btn btn-sm btn-light"
+                  data-close-modal>×</button></div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3"><label class="form-label required">Username</label><input
+                      class="form-control" placeholder="username"></div>
+                  <div class="col-md-6 mb-3"><label class="form-label required">Vai trò</label><select
+                      class="form-select">
+                      <option>ADMIN</option>
+                      <option>EMPLOYEE</option>
+                      <option>STUDENT</option>
+                    </select></div>
+                  <div class="col-md-6 mb-3"><label class="form-label required">Họ tên</label><input
+                      class="form-control" placeholder="Họ tên"></div>
+                  <div class="col-md-6 mb-3"><label class="form-label">Email</label><input class="form-control"
+                      placeholder="email@school.edu.vn"></div>
+                  <div class="col-12 mb-3"><label class="form-label">Liên kết sinh viên/nhân viên</label><input
+                      class="form-control" placeholder="Mã sinh viên hoặc mã nhân viên nếu có"></div>
+                </div>
+              </div>
+              <div class="modal-footer"><button class="btn btn-light" data-close-modal>Đóng</button><button
+                  class="btn btn-primary" data-action="save" data-close-modal>Lưu</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+</body>
+
+</html>
