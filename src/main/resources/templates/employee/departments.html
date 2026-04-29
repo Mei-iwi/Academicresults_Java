@@ -23,34 +23,11 @@
         </div>
       </div>
       <div class="sidebar-body">
-        <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
-        <nav class="sidebar-nav">
-          <a class="active" href="/employee/departments" th:href="@{/employee/departments}"><span
-              class="icon">🏢</span><span>Khoa</span></a>
-          <a class="" href="/employee/majors" th:href="@{/employee/majors}"><span
-              class="icon">🧭</span><span>Ngành</span></a>
-          <a class="" href="/employee/classes" th:href="@{/employee/classes}"><span
-              class="icon">🏫</span><span>Lớp</span></a>
-          <a class="" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh
-              viên</span></a>
-          <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
-              học</span></a>
-          <a class="" href="/employee/academic-years" th:href="@{/employee/academic-years}"><span
-              class="icon">📅</span><span>Năm học</span></a>
-          <a class="" href="/employee/semesters" th:href="@{/employee/semesters}"><span class="icon">🗓</span><span>Học
-              kỳ</span></a>
-          <a class="" href="/employee/course-sections" th:href="@{/employee/course-sections}"><span
-              class="icon">🧩</span><span>Lớp học phần</span></a>
-          <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Nhập
-              điểm</span></a>
-          <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
-              cáo</span></a>
-        </nav>
+        <div th:replace="~{layouts/employee-layout :: sidebar('departments')}"></div>
       </div>
       <div class="sidebar-footer">
-        <form th:action="@{/logout}" method="post" class="logout-form">
-          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
-        </form>
+        <div th:replace="~{layouts/User :: logout}"></div>
+
       </div>
     </aside>
     <main class="main">
@@ -63,8 +40,8 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <span class="route-pill">/employee/departments</span>
-          <span class="badge bg-light">Quản lý đào tạo</span>
+          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+
         </div>
       </header>
       <section class="content">
@@ -92,26 +69,20 @@
                 <table id="crudTable" class="table table-hover">
                   <thead>
                     <tr>
+                      <th>Mã định danh</th>
                       <th>Mã khoa</th>
                       <th>Tên khoa</th>
-                      <th>Trạng thái</th>
                       <th>Thao tác</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>CNTT</td>
-                      <td>Khoa Công nghệ thông tin</td>
-                      <td><span class="badge bg-success">Đang sử dụng</span></td>
+                  <tbody class="text-center">
+                    <tr th:each="department : ${departments}">
+                      <td th:text="${department.id}"></td>
+                      <td><span class="badge bg-success" th:text="${department.departmentCode}">Đang sử dụng</span></td>
+
+                      <td th:text="${department.departmentName}">Khoa Công nghệ thông tin</td>
                       <td class="action-group"><button class="btn btn-sm btn-outline-primary">Sửa</button><button
                           class="btn btn-sm btn-danger" data-action="delete">Xóa</button></td>
-                    </tr>
-                    <tr>
-                      <td>CNTT02</td>
-                      <td>Khoa Công nghệ thông tin 02</td>
-                      <td><span class="badge bg-secondary">Tạm ngưng</span></td>
-                      <td class="action-group"><button class="btn btn-sm btn-outline-primary">Sửa</button><button
-                          class="btn btn-sm btn-success" data-action="save">Bật lại</button></td>
                     </tr>
                   </tbody>
                 </table>

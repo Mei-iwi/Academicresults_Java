@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+
+</body>
+<div th:fragment="User(user, role)">
+    <table>
+        <tr>
+            <th><strong>Xin chào:</strong></th>
+            <td><span class="route-pill" th:text="${user}"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2"></strong><span class="badge bg-light" th:text="${role}">Quản trị hệ thống</span></td>
+        </tr>
+    </table>
+</div>
+
+<div th:fragment="logout">
+    <form th:action="@{/logout}" method="post" class="logout-form">
+        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <button type="submit" class="logout-button"><span class="icon">↩</span>
+            Đăng xuất
+        </button>
+    </form>
+</div>
+
+</html>

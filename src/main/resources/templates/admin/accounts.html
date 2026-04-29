@@ -23,26 +23,10 @@
         </div>
       </div>
       <div class="sidebar-body">
-        <div class="sidebar-section">Menu Quản trị viên</div>
-        <nav class="sidebar-nav">
-          <a class="" href="/admin/dashboard" th:href="@{/admin/dashboard}"><span class="icon">🏠</span><span>Tổng
-              quan</span></a>
-          <a class="active" href="/admin/accounts" th:href="@{/admin/accounts}"><span class="icon">👤</span><span>Tài
-              khoản</span></a>
-          <a class="" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh
-              viên</span></a>
-          <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
-              học</span></a>
-          <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Điểm học
-              tập</span></a>
-          <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
-              cáo</span></a>
-        </nav>
+        <div th:replace="~{layouts/admin-layout :: sidebar('accounts')}"></div>
       </div>
       <div class="sidebar-footer">
-        <form th:action="@{/logout}" method="post" class="logout-form">
-          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
-        </form>
+        <div th:replace="~{layouts/User :: logout}"></div>
       </div>
     </aside>
     <main class="main">
@@ -55,8 +39,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <span class="route-pill">/admin/accounts</span>
-          <span class="badge bg-light">Quản trị hệ thống</span>
+          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
         </div>
       </header>
       <section class="content">

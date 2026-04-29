@@ -23,20 +23,11 @@
         </div>
       </div>
       <div class="sidebar-body">
-        <div class="sidebar-section">Menu Sinh viên</div>
-        <nav class="sidebar-nav">
-          <a class="active" href="/student/dashboard" th:href="@{/student/dashboard}"><span
-              class="icon">🏠</span><span>Trang chủ</span></a>
-          <a class="" href="/student/results" th:href="@{/student/results}"><span class="icon">📄</span><span>Bảng điểm
-              học kỳ</span></a>
-          <a class="" href="/student/transcript" th:href="@{/student/transcript}"><span class="icon">🎓</span><span>Bảng
-              điểm tổng hợp</span></a>
-        </nav>
+        <div th:replace="~{/layouts/student-layout :: sidebar('dashboard')}"></div>
       </div>
       <div class="sidebar-footer">
-        <form th:action="@{/logout}" method="post" class="logout-form">
-          <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
-        </form>
+        <div th:replace="~{layouts/User :: logout}"></div>
+
       </div>
     </aside>
     <main class="main">
@@ -49,8 +40,8 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <span class="route-pill">/student/dashboard</span>
-          <span class="badge bg-light">Tra cứu kết quả</span>
+          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+
         </div>
       </header>
       <section class="content">

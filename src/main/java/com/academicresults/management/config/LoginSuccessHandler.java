@@ -30,7 +30,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         if (isAdmin) {
             response.sendRedirect("/admin/dashboard");
         } else if (isEmployee) {
-            response.sendRedirect("/employee/dashboard");
+            response.sendRedirect("/employee/departments");
         } else if (isStudent) {
             response.sendRedirect("/student/dashboard");
         } else {
