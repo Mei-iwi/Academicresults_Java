@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="route" content="/employee/students/detail/*">
+    <title>Chi tiết điểm sinh viên | Quản lý kết quả học tập</title>
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
+    <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+</head>
+
+<body data-role="employee">
+<div class="app-shell">
+
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-employee" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-mark">KQ</div>
+            <div>
+                <div class="sidebar-title">Quản lý kết quả</div>
+                <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+            </div>
+        </div>
+        <div class="sidebar-body">
+            <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
+            <nav class="sidebar-nav">
+                <a class="" href="/employee/departments" th:href="@{/employee/departments}"><span class="icon">🏢</span><span>Khoa</span></a>
+                <a class="" href="/employee/majors" th:href="@{/employee/majors}"><span class="icon">🧭</span><span>Ngành</span></a>
+                <a class="" href="/employee/classes" th:href="@{/employee/classes}"><span class="icon">🏫</span><span>Lớp</span></a>
+                <a class="active" href="/employee/students" th:href="@{/employee/students}"><span class="icon">🎓</span><span>Sinh viên</span></a>
+                <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn học</span></a>
+                <a class="" href="/employee/academic-years" th:href="@{/employee/academic-years}"><span class="icon">📅</span><span>Năm học</span></a>
+                <a class="" href="/employee/semesters" th:href="@{/employee/semesters}"><span class="icon">🗓</span><span>Học kỳ</span></a>
+                <a class="" href="/employee/course-sections" th:href="@{/employee/course-sections}"><span class="icon">🧩</span><span>Lớp học phần</span></a>
+                <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Nhập điểm</span></a>
+                <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo cáo</span></a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+                <div>
+                    <h1 class="page-title">Kết quả học tập chi tiết</h1>
+                    <div class="page-subtitle" th:text="${'Bảng điểm chi tiết của sinh viên: ' + student.fullName}">Xem chi tiết kết quả học tập.</div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 ms-auto text-end">
+                <span class="route-pill" th:text="${'/employee/students/detail/' + student.id}">/employee/students/detail/*</span>
+                <span class="badge bg-light">Kết quả học tập</span>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="mb-3">
+                <a href="/employee/students" th:href="@{/employee/students}" class="btn btn-outline-secondary btn-sm">
+                    ← Quay lại danh sách sinh viên
+                </a>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header"><strong>Thông tin sinh viên</strong></div>
+                <div class="card-body">
+                    <div class="row m-0">
+                        <div class="col-md-3 mb-2">
+                            <span class="text-muted small d-block">Mã sinh viên:</span>
+                            <strong class="text-dark" th:text="${student.studentCode}">SV001</strong>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <span class="text-muted small d-block">Họ và tên:</span>
+                            <strong class="text-dark" th:text="${student.fullName}">Nguyễn Văn A</strong>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <span class="text-muted small d-block">Lớp hành chính:</span>
+                            <strong class="text-primary" th:text="${student.studentClass != null ? student.studentClass.className : 'Chưa xếp lớp'}">DH21DS01</strong>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <span class="text-muted small d-block">Trạng thái học tập:</span>
+                            <span th:if="${student.status.name() == 'STUDYING'}" class="badge bg-success">Đang học</span>
+                            <span th:if="${student.status.name() == 'PAUSED'}" class="badge bg-warning">Tạm nghỉ</span>
+                            <span th:if="${student.status.name() == 'GRADUATED'}" class="badge bg-info">Đã tốt nghiệp</span>
+                            <span th:if="${student.status.name() == 'DROPPED'}" class="badge bg-danger">Thôi học</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><strong>Bảng điểm các lớp học phần đã tham gia</strong></div>
+                <div class="card-body table-responsive">
+                    <table class="table table-bordered table-hover m-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th style="width: 120px;">Mã học phần</th>
+                            <th>Tên môn học / Lớp học phần</th>
+                            <th style="width: 80px;" class="text-center">Tín chỉ</th>
+                            <th style="width: 100px;" class="text-center">Điểm GK</th>
+                            <th style="width: 100px;" class="text-center">Điểm Thi</th>
+                            <th style="width: 100px;" class="text-center">Tổng kết</th>
+                            <th style="width: 80px;" class="text-center">Hệ 4</th>
+                            <th style="width: 80px;" class="text-center">Chữ</th>
+                            <th style="width: 130px;" class="text-center">Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="result : ${results}">
+                            <td th:text="${result.section != null ? result.section.sectionCode : 'HP001'}">Mã HP</td>
+                            <td>
+                                <span th:text="${result.section != null && result.section.subject != null ? result.section.subject.subjectName : 'Tên môn học'}">Tên môn học</span>
+                                <small class="text-muted d-block" th:text="${'Lớp HP: ' + (result.section != null ? result.section.sectionName : 'Chưa rõ')}"></small>
+                            </td>
+                            <td class="text-center" th:text="${result.section != null && result.section.subject != null ? result.section.subject.credits : '0'}">3</td>
+
+                            <td class="text-center fw-bold text-secondary" th:text="${result.midtermScore != null ? result.midtermScore : '-'}">8.5</td>
+                            <td class="text-center fw-bold text-secondary" th:text="${result.finalScore != null ? result.finalScore : '-'}">7.0</td>
+                            <td class="text-center fw-bold text-primary" th:text="${result.totalScore != null ? result.totalScore : '-'}">7.5</td>
+                            <td class="text-center text-dark" th:text="${result.gradePoint != null ? result.gradePoint : '-'}">3.0</td>
+                            <td class="text-center fw-bold text-dark" th:text="${result.letterGrade != null ? result.letterGrade : '-'}">B+</td>
+
+                            <td class="text-center">
+                                <span th:if="${result.resultStatus != null && result.resultStatus.name() == 'PUBLISHED'}" class="badge bg-success">Đã công bố</span>
+                                <span th:if="${result.resultStatus != null && result.resultStatus.name() == 'LOCKED'}" class="badge bg-dark">Đã khóa</span>
+                                <span th:if="${result.resultStatus == null || result.resultStatus.name() == 'DRAFT'}" class="badge bg-warning text-dark">Bản nháp</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${results == null || #lists.isEmpty(results)}">
+                            <td colspan="9" class="text-center text-muted py-4">
+                                Sinh viên này hiện tại chưa tham gia lớp học phần nào hoặc chưa có dữ liệu điểm số trên hệ thống.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-light text-muted small">
+                    Ghi chú: Điểm số hiển thị theo thang điểm 10 và hệ 4 chuẩn đào tạo tín chỉ.
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+<script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+</body>
+</html>
