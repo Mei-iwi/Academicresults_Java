@@ -6,7 +6,6 @@ import com.academicresults.management.Entity.enums.StudentStatus;
 import com.academicresults.management.Services.ClassServices;
 import com.academicresults.management.Services.StudentServices;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,22 +15,20 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/employee/students")
-public class StudentController
-{
+public class StudentController {
     private final StudentServices studentServices;
     private final ClassServices classServices;
 
-    public StudentController(StudentServices studentServices, ClassServices classServices)
-    {
+    public StudentController(StudentServices studentServices, ClassServices classServices) {
         this.studentServices = studentServices;
         this.classServices = classServices;
     }
 
     @GetMapping
     public String showStudentList(@RequestParam(required = false) String search,
-                                  @RequestParam(required = false) Long classId,
-                                  @RequestParam(required = false) String status,
-                                  Model model) {
+            @RequestParam(required = false) Long classId,
+            @RequestParam(required = false) String status,
+            Model model) {
         List<Student> students;
 
         if (search != null && !search.trim().isEmpty()) {
@@ -66,19 +63,16 @@ public class StudentController
 
     @PostMapping("/add")
     public String addStudent(@Valid @ModelAttribute("student") Student student, BindingResult result, Model model) {
-        if (result.hasErrors())
-        {
+        if (result.hasErrors()) {
             model.addAttribute("students", studentServices.getAllStudents());
             model.addAttribute("classes", classServices.getAllClass());
             model.addAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin hợp lệ!");
             return "employee/students";
         }
-        try
-        {
+        try {
             studentServices.addStudent(student);
             return "redirect:/employee/students";
-        } catch (IllegalStateException e)
-        {
+        } catch (IllegalStateException e) {
             model.addAttribute("students", studentServices.getAllStudents());
             model.addAttribute("classes", classServices.getAllClass());
             model.addAttribute("errorMessage", e.getMessage());
@@ -87,21 +81,19 @@ public class StudentController
     }
 
     @PostMapping("/update/{id}")
-    public String updateStudent(@PathVariable Long id, @Valid @ModelAttribute("student") Student student, BindingResult result, Model model) {
-        if (result.hasErrors())
-        {
+    public String updateStudent(@PathVariable Long id, @Valid @ModelAttribute("student") Student student,
+            BindingResult result, Model model) {
+        if (result.hasErrors()) {
             student.setId(id);
             model.addAttribute("students", studentServices.getAllStudents());
             model.addAttribute("classes", classServices.getAllClass());
             model.addAttribute("errorMessage", "Dữ liệu chỉnh sửa không hợp lệ!");
             return "employee/students";
         }
-        try
-        {
+        try {
             studentServices.updateStudent(student);
             return "redirect:/employee/students";
-        } catch (IllegalStateException e)
-        {
+        } catch (IllegalStateException e) {
             model.addAttribute("students", studentServices.getAllStudents());
             model.addAttribute("classes", classServices.getAllClass());
             model.addAttribute("errorMessage", e.getMessage());
@@ -110,12 +102,11 @@ public class StudentController
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteStudent(@PathVariable Long id)
-    {
-        try
-        {
+    public String deleteStudent(@PathVariable Long id) {
+        try {
             studentServices.deleteStudentById(id);
-        } catch (IllegalStateException e){}
+        } catch (IllegalStateException e) {
+        }
         return "redirect:/employee/students";
     }
 
@@ -129,8 +120,7 @@ public class StudentController
     }
 
     @GetMapping("/profile/{studentCode}")
-    public String showStudentProfile(@PathVariable String studentCode, Model model)
-    {
+    public String showStudentProfile(@PathVariable String studentCode, Model model) {
         Student student = studentServices.getStudentByCode(studentCode)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sinh viên có mã: " + studentCode));
         model.addAttribute("student", student);
