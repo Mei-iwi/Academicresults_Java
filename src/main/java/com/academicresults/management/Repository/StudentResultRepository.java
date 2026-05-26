@@ -2,6 +2,7 @@ package com.academicresults.management.Repository;
 
 import com.academicresults.management.Entity.StudentResult;
 import com.academicresults.management.Entity.enums.ResultStatus;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,4 +56,27 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
                                               @Param("statuses") List<ResultStatus> statuses,
                                               @Param("semesterId") Integer semesterId,
                                               @Param("subjectId") Long subjectId);
+
+    long countByResultStatus(ResultStatus status);
+
+    long countByTotalScoreGreaterThanEqual(BigDecimal totalScore);
+
+    long countByTotalScoreLessThan(BigDecimal totalScore);
+
+    @Query("""
+            select coalesce(avg(r.totalScore), 0)
+            from StudentResult r
+            where r.totalScore is not null
+            """)
+    BigDecimal averageTotalScore();
+
+    @Query("""
+            select sem.semesterName, coalesce(avg(r.totalScore), 0), count(r)
+            from StudentResult r
+            join r.section sec
+            join sec.semester sem
+            group by sem.semesterName
+            order by sem.semesterName
+            """)
+    List<Object[]> averageScoreBySemester();
 }

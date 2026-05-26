@@ -1,25 +1,27 @@
-# Report Outline
+# Đề cương báo cáo
 
-## 1. Project Information
+## 1. Thông tin đồ án
 
-- Project name: Academic Results Management
-- Course: Java Technology
-- Architecture: Controller -> Service -> Repository -> Entity
-- Database: SQL Server
+- Tên đề tài: Hệ thống Web quản lý kết quả học tập
+- Tên tiếng Anh: Academic Results Management System
+- Môn học: Java Technology
+- Kiến trúc: Controller -> Service -> Repository -> Entity
+- Cơ sở dữ liệu: SQL Server
 
-## 2. Problem Statement
+## 2. Vấn đề cần giải quyết
 
-Academic staff need a web system to manage academic catalogs, students, course sections, and student results. Students need a secure portal to view only their own published grades and transcript summary.
+Nhân viên giáo vụ cần một hệ thống web để quản lý danh mục đào tạo, sinh viên, lớp học phần và kết quả học tập. Sinh viên cần một cổng tra cứu an toàn để chỉ xem điểm đã công bố và bảng điểm tổng hợp của chính mình.
 
-## 3. Scope
+## 3. Phạm vi
 
-- Role-based login for admin, employee, and student.
-- Academic catalog management.
-- Student management.
-- Result entry, validation, calculation, publish/lock workflow.
-- Student dashboard, result lookup, and transcript.
+- Đăng nhập theo vai trò ADMIN, EMPLOYEE, STUDENT.
+- Quản lý danh mục học vụ.
+- Quản lý sinh viên.
+- Nhập điểm, kiểm tra dữ liệu, tính điểm, công bố và khóa điểm.
+- Dashboard sinh viên, tra cứu kết quả và bảng điểm tổng hợp.
+- Không triển khai chức năng thương mại điện tử.
 
-## 4. Technologies
+## 4. Công nghệ
 
 - Spring Boot MVC
 - Thymeleaf
@@ -30,9 +32,9 @@ Academic staff need a web system to manage academic catalogs, students, course s
 - Bean Validation
 - Maven
 
-## 5. Database Design
+## 5. Thiết kế cơ sở dữ liệu
 
-Main tables:
+Các bảng chính:
 
 - `roles`
 - `accounts`
@@ -47,55 +49,58 @@ Main tables:
 - `course_sections`
 - `student_results`
 
-Relationships:
+Quan hệ chính:
 
-- Department has many majors.
-- Major has many classes.
-- Academic year has many semesters and classes.
-- Course section belongs to subject, semester, optional class, optional employee.
-- Student belongs to class.
-- Student result belongs to one student and one course section.
-- Account links to role and optionally student or employee.
+- Department có nhiều Major.
+- Major có nhiều StudentClass.
+- AcademicYear có nhiều Semester và StudentClass.
+- CourseSection thuộc Subject, Semester, có thể gắn với StudentClass và Employee.
+- Student thuộc StudentClass.
+- StudentResult thuộc một Student và một CourseSection.
+- Account gắn với Role và có thể gắn với Student hoặc Employee.
 
-## 6. Business Rules
+## 6. Quy tắc nghiệp vụ
 
-- Scores must be from 0 to 10.
-- Total score = attendance * 0.1 + midterm * 0.3 + final * 0.6.
+- Điểm phải nằm trong khoảng 0 đến 10.
+- `totalScore = attendanceScore * 0.1 + midtermScore * 0.3 + finalScore * 0.6`.
 - A >= 8.5, B >= 7.0, C >= 5.5, D >= 4.0, F < 4.0.
-- Grade points: A=4, B=3, C=2, D=1, F=0.
-- PASS when total score >= 4.0.
-- Students can only view their own published or locked results.
+- Grade point: A=4, B=3, C=2, D=1, F=0.
+- PASS khi `totalScore >= 4.0`.
+- Sinh viên chỉ được xem kết quả `PUBLISHED` hoặc `LOCKED` của chính mình.
+- Kết quả `LOCKED` không được sửa hoặc xóa nhầm.
 
-## 7. Security
+## 7. Bảo mật
 
-- ADMIN can access `/admin/**`.
-- EMPLOYEE can access `/employee/**`.
-- STUDENT can access `/student/**`.
-- Anonymous users can access `/`, `/login`, and static resources only.
-- Unauthorized access shows a friendly 403 page.
+- ADMIN truy cập `/admin/**`.
+- EMPLOYEE truy cập `/employee/**`.
+- STUDENT truy cập `/student/**`.
+- Người dùng chưa đăng nhập chỉ truy cập `/`, `/login` và static resources.
+- Truy cập sai quyền hiển thị trang 403 thân thiện.
 
-## 8. Main Screens
+## 8. Các màn hình chính
 
 - Login
 - Admin dashboard
-- Employee catalog CRUD pages
-- Employee result management
+- Quản lý tài khoản
+- Các trang CRUD danh mục cho Employee
+- Quản lý kết quả học tập
+- Báo cáo thống kê
 - Student dashboard
 - Student profile
 - Student results
 - Student transcript
 
-## 9. Testing Checklist
+## 9. Kịch bản kiểm thử
 
-- Build passes.
-- Login works for all roles.
-- Authorization blocks wrong-role access.
-- CRUD flow works for one catalog.
-- Result calculation matches formula.
-- Student cannot view another student's results.
+- Build pass với `mvn clean test`.
+- Đăng nhập được với các vai trò.
+- Chặn truy cập sai vai trò.
+- CRUD một danh mục hoạt động.
+- Công thức tính điểm đúng.
+- Sinh viên không xem được dữ liệu của sinh viên khác.
 
-## 10. Limitations And Future Work
+## 10. Hạn chế và hướng phát triển
 
-- Catalog pages can be improved with richer inline editing.
-- More automated integration tests can be added.
-- Production deployment should replace demo credentials and externalize secrets.
+- Một số trang CRUD có thể cải thiện thêm trải nghiệm chỉnh sửa inline.
+- Có thể bổ sung thêm integration test tự động cho các luồng đăng nhập/CRUD.
+- Khi triển khai thật cần thay tài khoản demo và đưa cấu hình nhạy cảm ra biến môi trường.

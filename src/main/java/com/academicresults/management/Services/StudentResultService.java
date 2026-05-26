@@ -51,6 +51,10 @@ public class StudentResultService {
                 ? resultRepository.findByStudent_IdAndSection_Id(studentId, sectionId).orElseGet(StudentResult::new)
                 : resultRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Result not found: " + id));
 
+        if (result.getId() != null && result.getResultStatus() == ResultStatus.LOCKED) {
+            throw new IllegalArgumentException("Kết quả đã khóa, không thể chỉnh sửa.");
+        }
+
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentId));
         CourseSection section = courseSectionRepository.findById(sectionId)
@@ -74,12 +78,20 @@ public class StudentResultService {
     }
 
     public void delete(Long id) {
+        StudentResult result = resultRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kết quả."));
+        if (result.getResultStatus() == ResultStatus.LOCKED) {
+            throw new IllegalArgumentException("Kết quả đã khóa, không thể xóa.");
+        }
         resultRepository.deleteById(id);
     }
 
     public void updateStatus(Long id, ResultStatus status) {
         StudentResult result = resultRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Result not found: " + id));
+        if (result.getResultStatus() == ResultStatus.LOCKED && status != ResultStatus.LOCKED) {
+            throw new IllegalArgumentException("Kết quả đã khóa, không thể chuyển về trạng thái khác.");
+        }
         result.setResultStatus(status);
     }
 
@@ -148,7 +160,7 @@ public class StudentResultService {
 
     private void validateScore(BigDecimal score, String field) {
         if (score == null || score.compareTo(MIN_SCORE) < 0 || score.compareTo(MAX_SCORE) > 0) {
-            throw new IllegalArgumentException(field + " must be between 0 and 10");
+            throw new IllegalArgumentException(field + " phải nằm trong khoảng 0 đến 10.");
         }
     }
 }

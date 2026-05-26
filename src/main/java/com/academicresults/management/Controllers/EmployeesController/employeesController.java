@@ -13,11 +13,15 @@ import com.academicresults.management.Entity.enums.SectionStatus;
 import com.academicresults.management.Services.AcademicCatalogService;
 import com.academicresults.management.Services.StudentResultService;
 import com.academicresults.management.Services.StudentServices;
+import com.academicresults.management.Services.ReportService;
 import java.math.BigDecimal;
 import java.security.Principal;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +38,7 @@ public class employeesController {
     private final AcademicCatalogService catalogService;
     private final StudentServices studentServices;
     private final StudentResultService resultService;
+    private final ReportService reportService;
 
     @GetMapping("/departments")
     public String departments(@RequestParam(required = false) String keyword, Model model) {
@@ -43,15 +48,16 @@ public class employeesController {
     }
 
     @PostMapping("/departments")
-    public String saveDepartment(@ModelAttribute Department department) {
-        catalogService.saveDepartment(department);
-        return "redirect:/employee/departments";
+    public String saveDepartment(@Valid @ModelAttribute Department department, BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/departments",
+                () -> catalogService.saveDepartment(department), "Đã lưu khoa thành công.");
     }
 
     @PostMapping("/departments/delete/{id}")
-    public String deleteDepartment(@PathVariable Integer id) {
-        catalogService.deleteDepartment(id);
-        return "redirect:/employee/departments";
+    public String deleteDepartment(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/departments",
+                () -> catalogService.deleteDepartment(id));
     }
 
     @GetMapping("/majors")
@@ -63,15 +69,16 @@ public class employeesController {
     }
 
     @PostMapping("/majors")
-    public String saveMajor(@ModelAttribute Major major) {
-        catalogService.saveMajor(major);
-        return "redirect:/employee/majors";
+    public String saveMajor(@Valid @ModelAttribute Major major, BindingResult bindingResult,
+                            RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/majors",
+                () -> catalogService.saveMajor(major), "Đã lưu ngành thành công.");
     }
 
     @PostMapping("/majors/delete/{id}")
-    public String deleteMajor(@PathVariable Integer id) {
-        catalogService.deleteMajor(id);
-        return "redirect:/employee/majors";
+    public String deleteMajor(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/majors",
+                () -> catalogService.deleteMajor(id));
     }
 
     @GetMapping("/classes")
@@ -85,15 +92,16 @@ public class employeesController {
     }
 
     @PostMapping("/classes")
-    public String saveClass(@ModelAttribute StudentClass studentClass) {
-        catalogService.saveClass(studentClass);
-        return "redirect:/employee/classes";
+    public String saveClass(@Valid @ModelAttribute StudentClass studentClass, BindingResult bindingResult,
+                            RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/classes",
+                () -> catalogService.saveClass(studentClass), "Đã lưu lớp thành công.");
     }
 
     @PostMapping("/classes/delete/{id}")
-    public String deleteClass(@PathVariable Long id) {
-        catalogService.deleteClass(id);
-        return "redirect:/employee/classes";
+    public String deleteClass(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/classes",
+                () -> catalogService.deleteClass(id));
     }
 
     @GetMapping("/subjects")
@@ -104,15 +112,16 @@ public class employeesController {
     }
 
     @PostMapping("/subjects")
-    public String saveSubject(@ModelAttribute Subject subject) {
-        catalogService.saveSubject(subject);
-        return "redirect:/employee/subjects";
+    public String saveSubject(@Valid @ModelAttribute Subject subject, BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/subjects",
+                () -> catalogService.saveSubject(subject), "Đã lưu môn học thành công.");
     }
 
     @PostMapping("/subjects/delete/{id}")
-    public String deleteSubject(@PathVariable Long id) {
-        catalogService.deleteSubject(id);
-        return "redirect:/employee/subjects";
+    public String deleteSubject(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/subjects",
+                () -> catalogService.deleteSubject(id));
     }
 
     @GetMapping("/academic-years")
@@ -123,15 +132,16 @@ public class employeesController {
     }
 
     @PostMapping("/academic-years")
-    public String saveAcademicYear(@ModelAttribute AcademicYear academicYear) {
-        catalogService.saveAcademicYear(academicYear);
-        return "redirect:/employee/academic-years";
+    public String saveAcademicYear(@Valid @ModelAttribute AcademicYear academicYear, BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/academic-years",
+                () -> catalogService.saveAcademicYear(academicYear), "Đã lưu năm học thành công.");
     }
 
     @PostMapping("/academic-years/delete/{id}")
-    public String deleteAcademicYear(@PathVariable Integer id) {
-        catalogService.deleteAcademicYear(id);
-        return "redirect:/employee/academic-years";
+    public String deleteAcademicYear(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/academic-years",
+                () -> catalogService.deleteAcademicYear(id));
     }
 
     @GetMapping("/semesters")
@@ -143,15 +153,16 @@ public class employeesController {
     }
 
     @PostMapping("/semesters")
-    public String saveSemester(@ModelAttribute Semester semester) {
-        catalogService.saveSemester(semester);
-        return "redirect:/employee/semesters";
+    public String saveSemester(@Valid @ModelAttribute Semester semester, BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/semesters",
+                () -> catalogService.saveSemester(semester), "Đã lưu học kỳ thành công.");
     }
 
     @PostMapping("/semesters/delete/{id}")
-    public String deleteSemester(@PathVariable Integer id) {
-        catalogService.deleteSemester(id);
-        return "redirect:/employee/semesters";
+    public String deleteSemester(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/semesters",
+                () -> catalogService.deleteSemester(id));
     }
 
     @GetMapping("/course-sections")
@@ -169,15 +180,16 @@ public class employeesController {
     }
 
     @PostMapping("/course-sections")
-    public String saveCourseSection(@ModelAttribute CourseSection courseSection) {
-        catalogService.saveCourseSection(courseSection);
-        return "redirect:/employee/course-sections";
+    public String saveCourseSection(@Valid @ModelAttribute CourseSection courseSection, BindingResult bindingResult,
+                                    RedirectAttributes redirectAttributes) {
+        return saveCatalog(bindingResult, redirectAttributes, "redirect:/employee/course-sections",
+                () -> catalogService.saveCourseSection(courseSection), "Đã lưu lớp học phần thành công.");
     }
 
     @PostMapping("/course-sections/delete/{id}")
-    public String deleteCourseSection(@PathVariable Long id) {
-        catalogService.deleteCourseSection(id);
-        return "redirect:/employee/course-sections";
+    public String deleteCourseSection(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        return deleteCatalog(redirectAttributes, "redirect:/employee/course-sections",
+                () -> catalogService.deleteCourseSection(id));
     }
 
     @GetMapping("/results")
@@ -210,7 +222,7 @@ public class employeesController {
                              RedirectAttributes redirectAttributes) {
         try {
             resultService.save(id, studentId, sectionId, attendanceScore, midtermScore, finalScore, note, status, principal);
-            redirectAttributes.addFlashAttribute("successMessage", "Result saved.");
+            redirectAttributes.addFlashAttribute("successMessage", "Đã lưu kết quả học tập.");
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
@@ -218,14 +230,25 @@ public class employeesController {
     }
 
     @PostMapping("/results/delete/{id}")
-    public String deleteResult(@PathVariable Long id) {
-        resultService.delete(id);
+    public String deleteResult(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            resultService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa kết quả.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
         return "redirect:/employee/results";
     }
 
     @PostMapping("/results/{id}/status")
-    public String updateResultStatus(@PathVariable Long id, @RequestParam ResultStatus status) {
-        resultService.updateStatus(id, status);
+    public String updateResultStatus(@PathVariable Long id, @RequestParam ResultStatus status,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            resultService.updateStatus(id, status);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật trạng thái kết quả.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
         return "redirect:/employee/results";
     }
 
@@ -237,8 +260,37 @@ public class employeesController {
     }
 
     @GetMapping("/reports")
-    public String reports() {
+    public String reports(Model model) {
+        model.addAttribute("summary", reportService.summary());
+        model.addAttribute("semesterAverages", reportService.averageBySemester());
         return "employee/reports";
+    }
+
+    private String saveCatalog(BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                               String redirectUrl, Runnable action, String successMessage) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return redirectUrl;
+        }
+        try {
+            action.run();
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return redirectUrl;
+    }
+
+    private String deleteCatalog(RedirectAttributes redirectAttributes, String redirectUrl, Runnable action) {
+        try {
+            action.run();
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa dữ liệu.");
+        } catch (DataIntegrityViolationException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa vì dữ liệu đang được sử dụng.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return redirectUrl;
     }
 
 }

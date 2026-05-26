@@ -1,139 +1,115 @@
 <!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="route" content="/employee/reports">
-  <title>Thống kê báo cáo | Quản lý kết quả học tập</title>
-  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
-  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+  <title>Báo cáo thống kê | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-
 <body data-role="employee">
-  <div class="app-shell">
+<div class="app-shell">
+  <aside class="sidebar sidebar-employee" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">KQ</div>
+      <div><div class="sidebar-title">Quản lý kết quả</div><div class="sidebar-subtitle">Nhân viên giáo vụ</div></div>
+    </div>
+    <div class="sidebar-body" th:replace="~{layouts/employee-layout :: sidebar('reports')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
 
-    <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-employee" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
-        <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
-          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Báo cáo thống kê</h1>
+        <div class="page-subtitle">Tổng quan sinh viên, môn học, lớp học phần và kết quả học tập.</div>
+      </div>
+      <div class="ms-auto text-end" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+
+    <section class="content">
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">Sinh viên</div>
+            <div class="metric-value" th:text="${summary.totalStudents()}">0</div>
+          </div></div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">Môn học</div>
+            <div class="metric-value" th:text="${summary.totalSubjects()}">0</div>
+          </div></div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">Lớp học phần</div>
+            <div class="metric-value" th:text="${summary.totalCourseSections()}">0</div>
+          </div></div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">Kết quả</div>
+            <div class="metric-value" th:text="${summary.totalResults()}">0</div>
+          </div></div>
         </div>
       </div>
-      <div class="sidebar-body">
-        <div th:replace="~{/layouts/employee-layout :: sidebar('reports')}"></div>
 
+      <div class="row">
+        <div class="col-lg-5 mb-4">
+          <div class="card">
+            <div class="card-header"><strong>Tỷ lệ đạt / không đạt</strong></div>
+            <div class="card-body">
+              <p>Đạt: <strong th:text="${summary.passCount()}">0</strong></p>
+              <p>Không đạt: <strong th:text="${summary.failCount()}">0</strong></p>
+              <p>Tỷ lệ đạt: <strong th:text="${summary.passRate() + '%'}">0%</strong></p>
+              <p>Điểm trung bình toàn hệ thống: <strong th:text="${summary.averageScore()}">0.00</strong></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7 mb-4">
+          <div class="card">
+            <div class="card-header"><strong>Trạng thái kết quả</strong></div>
+            <div class="card-body table-responsive">
+              <table class="table table-hover">
+                <thead><tr><th>Trạng thái</th><th>Số lượng</th></tr></thead>
+                <tbody>
+                  <tr><td>DRAFT</td><td th:text="${summary.draftCount()}">0</td></tr>
+                  <tr><td>PUBLISHED</td><td th:text="${summary.publishedCount()}">0</td></tr>
+                  <tr><td>LOCKED</td><td th:text="${summary.lockedCount()}">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="sidebar-footer">
-        <div th:replace="~{layouts/User :: logout}"></div>
 
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <strong>Điểm trung bình theo học kỳ</strong>
+          <button class="btn btn-sm btn-outline-secondary" data-action="print">In</button>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover">
+            <thead><tr><th>Học kỳ</th><th>Số kết quả</th><th>Điểm trung bình</th></tr></thead>
+            <tbody>
+              <tr th:each="row : ${semesterAverages}">
+                <td th:text="${row.semesterName()}"></td>
+                <td th:text="${row.resultCount()}"></td>
+                <td th:text="${row.averageScore()}"></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(semesterAverages)}">
+                <td colspan="3" class="text-center text-muted">Chưa có dữ liệu kết quả.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-          <div>
-            <h1 class="page-title">Thống kê báo cáo</h1>
-            <div class="page-subtitle">Điểm trung bình, chưa đạt và chưa nhập điểm.</div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-
-        </div>
-      </header>
-      <section class="content">
-        <div class="row mb-4">
-          <div class="col-md-4 mb-3">
-            <div class="card metric-card">
-              <div class="card-body">
-                <div class="metric-label">Điểm trung bình toàn hệ</div>
-                <div class="metric-value">7.18</div><span class="badge bg-success">Tạm ổn</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card metric-card">
-              <div class="card-body">
-                <div class="metric-label">Sinh viên chưa đạt</div>
-                <div class="metric-value">86</div><span class="badge bg-danger">Cần theo dõi</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card metric-card">
-              <div class="card-body">
-                <div class="metric-label">Lớp chưa nhập điểm</div>
-                <div class="metric-value">5</div><span class="badge bg-warning">Nháp/thiếu</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-7 mb-4">
-            <div class="card">
-              <div class="card-header d-flex justify-content-between"><strong>Thống kê theo môn</strong><button
-                  class="btn btn-sm btn-outline-secondary" data-action="print">In</button></div>
-              <div class="card-body table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Môn</th>
-                      <th>Số SV</th>
-                      <th>Điểm TB</th>
-                      <th>Chưa đạt</th>
-                      <th>Chưa nhập</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Công nghệ Java</td>
-                      <td>90</td>
-                      <td>7.2</td>
-                      <td>8</td>
-                      <td>3</td>
-                    </tr>
-                    <tr>
-                      <td>Hệ cơ sở dữ liệu</td>
-                      <td>86</td>
-                      <td>6.9</td>
-                      <td>12</td>
-                      <td>0</td>
-                    </tr>
-                    <tr>
-                      <td>Lập trình hướng đối tượng</td>
-                      <td>92</td>
-                      <td>7.5</td>
-                      <td>5</td>
-                      <td>1</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-5 mb-4">
-            <div class="card">
-              <div class="card-header"><strong>Biểu đồ điểm trung bình mẫu</strong></div>
-              <div class="card-body">
-                <div class="fake-chart">
-                  <div class="bar" style="height:72%"><span>Java</span></div>
-                  <div class="bar" style="height:69%"><span>CSDL</span></div>
-                  <div class="bar" style="height:75%"><span>OOP</span></div>
-                  <div class="bar" style="height:64%"><span>Mạng</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+    </section>
+  </main>
+</div>
+<script th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+<script th:src="@{/js/app.js}"></script>
 </body>
-
 </html>
