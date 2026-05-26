@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
   <div class="sidebar-body" th:fragment="sidebar(activeMenu)">
-    <div class="sidebar-section">Student Menu</div>
+    <div class="sidebar-section">Menu sinh viên</div>
     <nav class="sidebar-nav">
       <a href="/student/dashboard" th:href="@{/student/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
-        <span class="icon">Home</span><span>Dashboard</span>
+        <span class="icon">Home</span><span>Bảng điều khiển</span>
       </a>
       <a href="/student/profile" th:href="@{/student/profile}" th:classappend="${activeMenu == 'profile'} ? ' active' : ''">
-        <span class="icon">ID</span><span>Profile</span>
+        <span class="icon">ID</span><span>Hồ sơ</span>
       </a>
       <a href="/student/results" th:href="@{/student/results}" th:classappend="${activeMenu == 'results'} ? ' active' : ''">
-        <span class="icon">R</span><span>Results</span>
+        <span class="icon">KQ</span><span>Kết quả học tập</span>
       </a>
       <a href="/student/transcript" th:href="@{/student/transcript}" th:classappend="${activeMenu == 'transcript'} ? ' active' : ''">
-        <span class="icon">GPA</span><span>Transcript</span>
+        <span class="icon">GPA</span><span>Bảng điểm</span>
       </a>
     </nav>
   </div>

@@ -1,21 +1,25 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Results</title>
+  <title>Quản lý kết quả học tập</title>
   <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
   <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body data-role="employee">
 <div class="app-shell">
+  <div class="sidebar-overlay"></div>
   <aside class="sidebar sidebar-employee">
     <div class="sidebar-body" th:replace="~{layouts/employee-layout :: sidebar('results')}"></div>
     <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
   </aside>
   <main class="main">
     <header class="topbar">
-      <div><h1 class="page-title">Student Results</h1><div class="page-subtitle">Create, edit, publish, lock, and delete academic results.</div></div>
+      <div>
+        <h1 class="page-title">Quản lý kết quả học tập</h1>
+        <div class="page-subtitle">Nhập điểm, tính điểm tổng kết, công bố và khóa kết quả.</div>
+      </div>
       <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
     </header>
     <section class="content">
@@ -23,51 +27,135 @@
       <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
       <form method="get" th:action="@{/employee/results}" class="card card-body mb-3">
-        <div class="row g-2">
-          <div class="col-md-3"><input class="form-control" name="keyword" placeholder="Search student or subject"></div>
-          <div class="col-md-3"><select class="form-select" name="semesterId"><option value="">All semesters</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option></select></div>
-          <div class="col-md-3"><select class="form-select" name="subjectId"><option value="">All subjects</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option></select></div>
-          <div class="col-md-2"><select class="form-select" name="status"><option value="">All status</option><option th:each="s:${statuses}" th:value="${s}" th:text="${s}"></option></select></div>
-          <div class="col-md-1"><button class="btn btn-primary w-100">Filter</button></div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label" for="keyword">Từ khóa</label>
+            <input id="keyword" class="form-control" name="keyword" placeholder="Sinh viên hoặc môn học">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="semesterId">Học kỳ</label>
+            <select id="semesterId" class="form-select" name="semesterId">
+              <option value="">Tất cả học kỳ</option>
+              <option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="subjectId">Môn học</label>
+            <select id="subjectId" class="form-select" name="subjectId">
+              <option value="">Tất cả môn học</option>
+              <option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="status">Trạng thái</label>
+            <select id="status" class="form-select" name="status">
+              <option value="">Tất cả trạng thái</option>
+              <option th:each="s:${statuses}" th:value="${s}"
+                      th:text="${s.name() == 'DRAFT' ? 'Nháp' : (s.name() == 'PUBLISHED' ? 'Đã công bố' : 'Đã khóa')}"></option>
+            </select>
+          </div>
+          <div class="col-md-1">
+            <button class="btn btn-primary w-100">Lọc</button>
+          </div>
         </div>
       </form>
 
       <div class="card mb-3">
-        <div class="card-header"><strong>Result form</strong></div>
+        <div class="card-header"><strong>Phiếu nhập điểm</strong></div>
         <div class="card-body">
           <form method="post" th:action="@{/employee/results}" class="row g-3">
             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <div class="col-md-3"><label class="form-label">Student</label><select class="form-select" name="studentId" required><option th:each="s:${students}" th:value="${s.id}" th:text="${s.studentCode + ' - ' + s.fullName}"></option></select></div>
-            <div class="col-md-3"><label class="form-label">Course section</label><select class="form-select" name="sectionId" required><option th:each="s:${courseSections}" th:value="${s.id}" th:text="${s.sectionCode + ' - ' + s.subject.subjectName}"></option></select></div>
-            <div class="col-md-1"><label class="form-label">Attend</label><input class="form-control" name="attendanceScore" type="number" min="0" max="10" step="0.01" required></div>
-            <div class="col-md-1"><label class="form-label">Midterm</label><input class="form-control" name="midtermScore" type="number" min="0" max="10" step="0.01" required></div>
-            <div class="col-md-1"><label class="form-label">Final</label><input class="form-control" name="finalScore" type="number" min="0" max="10" step="0.01" required></div>
-            <div class="col-md-2"><label class="form-label">Status</label><select class="form-select" name="status"><option th:each="s:${statuses}" th:value="${s}" th:text="${s}"></option></select></div>
-            <div class="col-md-1 d-flex align-items-end"><button class="btn btn-primary w-100">Save</button></div>
-            <div class="col-12"><input class="form-control" name="note" placeholder="Note"></div>
+            <div class="col-md-3">
+              <label class="form-label required">Sinh viên</label>
+              <select class="form-select" name="studentId" required>
+                <option value="">Chọn sinh viên</option>
+                <option th:each="s:${students}" th:value="${s.id}" th:text="${s.studentCode + ' - ' + s.fullName}"></option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label required">Lớp học phần</label>
+              <select class="form-select" name="sectionId" required>
+                <option value="">Chọn lớp học phần</option>
+                <option th:each="s:${courseSections}" th:value="${s.id}" th:text="${s.sectionCode + ' - ' + s.subject.subjectName}"></option>
+              </select>
+            </div>
+            <div class="col-md-1">
+              <label class="form-label required">Chuyên cần</label>
+              <input class="form-control" name="attendanceScore" type="number" min="0" max="10" step="0.01" required>
+            </div>
+            <div class="col-md-1">
+              <label class="form-label required">Giữa kỳ</label>
+              <input class="form-control" name="midtermScore" type="number" min="0" max="10" step="0.01" required>
+            </div>
+            <div class="col-md-1">
+              <label class="form-label required">Cuối kỳ</label>
+              <input class="form-control" name="finalScore" type="number" min="0" max="10" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Trạng thái</label>
+              <select class="form-select" name="status">
+                <option th:each="s:${statuses}" th:value="${s}"
+                        th:text="${s.name() == 'DRAFT' ? 'Nháp' : (s.name() == 'PUBLISHED' ? 'Đã công bố' : 'Đã khóa')}"></option>
+              </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button class="btn btn-primary w-100">Lưu</button>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Ghi chú</label>
+              <input class="form-control" name="note" placeholder="Ghi chú nội bộ nếu có">
+            </div>
           </form>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-header"><strong>Results</strong></div>
+        <div class="card-header"><strong>Danh sách kết quả</strong></div>
         <div class="card-body table-responsive">
           <table class="table table-hover align-middle">
-            <thead><tr><th>Student</th><th>Section</th><th>Scores</th><th>Total</th><th>Grade</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead>
+            <tr><th>Sinh viên</th><th>Lớp học phần</th><th>Điểm</th><th>Tổng</th><th>Xếp loại</th><th>Trạng thái</th><th>Thao tác</th></tr>
+            </thead>
             <tbody>
-              <tr th:each="r:${results}">
-                <td><span th:text="${r.student.studentCode}"></span><br><small th:text="${r.student.fullName}"></small></td>
-                <td><span th:text="${r.section.sectionCode}"></span><br><small th:text="${r.section.subject.subjectName}"></small></td>
-                <td th:text="${r.attendanceScore + ' / ' + r.midtermScore + ' / ' + r.finalScore}"></td>
-                <td th:text="${r.totalScore}"></td>
-                <td th:text="${r.letterGrade + ' (' + r.gradePoint + ')'}"></td>
-                <td><span class="badge bg-secondary" th:text="${r.resultStatus}"></span></td>
-                <td class="d-flex gap-1">
-                  <form method="post" th:action="@{/employee/results/{id}/status(id=${r.id})}"><input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><input type="hidden" name="status" value="PUBLISHED"><button class="btn btn-sm btn-success">Publish</button></form>
-                  <form method="post" th:action="@{/employee/results/{id}/status(id=${r.id})}"><input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><input type="hidden" name="status" value="LOCKED"><button class="btn btn-sm btn-warning">Lock</button></form>
-                  <form method="post" th:action="@{/employee/results/delete/{id}(id=${r.id})}"><input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><button class="btn btn-sm btn-danger">Delete</button></form>
-                </td>
-              </tr>
+            <tr th:each="r:${results}">
+              <td><span th:text="${r.student.studentCode}"></span><br><small th:text="${r.student.fullName}"></small></td>
+              <td><span th:text="${r.section.sectionCode}"></span><br><small th:text="${r.section.subject.subjectName}"></small></td>
+              <td th:text="${r.attendanceScore + ' / ' + r.midtermScore + ' / ' + r.finalScore}"></td>
+              <td th:text="${r.totalScore}"></td>
+              <td th:text="${r.letterGrade + ' (' + r.gradePoint + ')'}"></td>
+              <td>
+                <span class="badge"
+                      th:classappend="${r.resultStatus.name() == 'DRAFT' ? ' bg-warning text-dark' : (r.resultStatus.name() == 'PUBLISHED' ? ' bg-success' : ' bg-dark')}"
+                      th:text="${r.resultStatus.name() == 'DRAFT' ? 'Nháp' : (r.resultStatus.name() == 'PUBLISHED' ? 'Đã công bố' : 'Đã khóa')}"></span>
+              </td>
+              <td>
+                <div class="d-flex flex-wrap gap-1">
+                  <form method="post" th:action="@{/employee/results/{id}/status(id=${r.id})}"
+                        onsubmit="return confirm('Công bố kết quả này?');"
+                        th:if="${r.resultStatus.name() != 'LOCKED'}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="hidden" name="status" value="PUBLISHED">
+                    <button class="btn btn-sm btn-success">Công bố</button>
+                  </form>
+                  <form method="post" th:action="@{/employee/results/{id}/status(id=${r.id})}"
+                        onsubmit="return confirm('Khóa kết quả này?');"
+                        th:if="${r.resultStatus.name() != 'LOCKED'}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="hidden" name="status" value="LOCKED">
+                    <button class="btn btn-sm btn-warning">Khóa</button>
+                  </form>
+                  <form method="post" th:action="@{/employee/results/delete/{id}(id=${r.id})}"
+                        onsubmit="return confirm('Bạn chắc chắn muốn xóa kết quả này?');"
+                        th:if="${r.resultStatus.name() != 'LOCKED'}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="btn btn-sm btn-danger">Xóa</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(results)}">
+              <td colspan="7" class="text-center text-muted py-4">Chưa có kết quả học tập.</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -75,5 +163,6 @@
     </section>
   </main>
 </div>
+<script th:src="@{/js/app.js}"></script>
 </body>
 </html>

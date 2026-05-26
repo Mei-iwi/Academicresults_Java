@@ -173,7 +173,7 @@
                 <form class="d-flex gap-1" method="post" th:action="@{/admin/accounts/{id}/reset-password(id=${account.id})}">
                   <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                   <input class="form-control form-control-sm" name="password" type="password" placeholder="Mật khẩu mới" required style="width:130px">
-                  <button class="btn btn-sm btn-warning">Reset</button>
+                  <button class="btn btn-sm btn-warning" onclick="return confirm('Đặt lại mật khẩu tài khoản này?');">Đặt lại</button>
                 </form>
               </td>
             </tr>

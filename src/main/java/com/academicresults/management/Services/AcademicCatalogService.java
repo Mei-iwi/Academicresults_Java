@@ -45,7 +45,7 @@ public class AcademicCatalogService {
     public Department saveDepartment(Department department) {
         Integer id = department.getId() == null ? -1 : department.getId();
         if (departmentRepository.existsByDepartmentCodeAndIdNot(department.getDepartmentCode(), id)) {
-            throw new IllegalArgumentException("Department code already exists.");
+            throw new IllegalArgumentException("Mã khoa đã tồn tại.");
         }
         return departmentRepository.save(department);
     }
@@ -65,7 +65,7 @@ public class AcademicCatalogService {
     public Major saveMajor(Major major) {
         Integer id = major.getId() == null ? -1 : major.getId();
         if (majorRepository.existsByMajorCodeAndIdNot(major.getMajorCode(), id)) {
-            throw new IllegalArgumentException("Major code already exists.");
+            throw new IllegalArgumentException("Mã ngành đã tồn tại.");
         }
         return majorRepository.save(major);
     }
@@ -82,7 +82,7 @@ public class AcademicCatalogService {
     public StudentClass saveClass(StudentClass studentClass) {
         Long id = studentClass.getId() == null ? -1L : studentClass.getId();
         if (classRepository.existsByClassCodeAndIdNot(studentClass.getClassCode(), id)) {
-            throw new IllegalArgumentException("Class code already exists.");
+            throw new IllegalArgumentException("Mã lớp đã tồn tại.");
         }
         return classRepository.save(studentClass);
     }
@@ -102,10 +102,10 @@ public class AcademicCatalogService {
     public Subject saveSubject(Subject subject) {
         Long id = subject.getId() == null ? -1L : subject.getId();
         if (subjectRepository.existsBySubjectCodeAndIdNot(subject.getSubjectCode(), id)) {
-            throw new IllegalArgumentException("Subject code already exists.");
+            throw new IllegalArgumentException("Mã môn học đã tồn tại.");
         }
         if (subject.getCredits() != null && subject.getCredits() < 0) {
-            throw new IllegalArgumentException("Credits must be non-negative.");
+            throw new IllegalArgumentException("Số tín chỉ không được âm.");
         }
         return subjectRepository.save(subject);
     }
@@ -122,7 +122,7 @@ public class AcademicCatalogService {
     public AcademicYear saveAcademicYear(AcademicYear academicYear) {
         Integer id = academicYear.getId() == null ? -1 : academicYear.getId();
         if (academicYearRepository.existsByYearNameAndIdNot(academicYear.getYearName(), id)) {
-            throw new IllegalArgumentException("Academic year already exists.");
+            throw new IllegalArgumentException("Năm học đã tồn tại.");
         }
         return academicYearRepository.save(academicYear);
     }
@@ -142,7 +142,7 @@ public class AcademicCatalogService {
     public Semester saveSemester(Semester semester) {
         Integer id = semester.getId() == null ? -1 : semester.getId();
         if (semesterRepository.existsBySemesterCodeAndIdNot(semester.getSemesterCode(), id)) {
-            throw new IllegalArgumentException("Semester code already exists.");
+            throw new IllegalArgumentException("Mã học kỳ đã tồn tại.");
         }
         return semesterRepository.save(semester);
     }
@@ -159,10 +159,10 @@ public class AcademicCatalogService {
     public CourseSection saveCourseSection(CourseSection courseSection) {
         Long id = courseSection.getId() == null ? -1L : courseSection.getId();
         if (courseSectionRepository.existsBySectionCodeAndIdNot(courseSection.getSectionCode(), id)) {
-            throw new IllegalArgumentException("Course section code already exists.");
+            throw new IllegalArgumentException("Mã lớp học phần đã tồn tại.");
         }
         if (courseSection.getMaxStudents() != null && courseSection.getMaxStudents() < 0) {
-            throw new IllegalArgumentException("Max students must be non-negative.");
+            throw new IllegalArgumentException("Sĩ số tối đa không được âm.");
         }
         return courseSectionRepository.save(courseSection);
     }

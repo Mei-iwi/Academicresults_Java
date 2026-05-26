@@ -1,53 +1,71 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Transcript</title>
+  <title>Bảng điểm</title>
   <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
   <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body data-role="student">
 <div class="app-shell">
+  <div class="sidebar-overlay"></div>
   <aside class="sidebar sidebar-student">
     <div class="sidebar-body" th:replace="~{layouts/student-layout :: sidebar('transcript')}"></div>
     <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
   </aside>
   <main class="main">
     <header class="topbar">
-      <div><h1 class="page-title">Transcript</h1><div class="page-subtitle">Published results grouped by semester.</div></div>
+      <div>
+        <h1 class="page-title">Bảng điểm</h1>
+        <div class="page-subtitle">Kết quả đã công bố được nhóm theo học kỳ.</div>
+      </div>
       <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
     </header>
     <section class="content">
       <div class="card mb-3">
         <div class="card-body row g-3">
-          <div class="col-md-3"><strong>Student</strong><div th:text="${student.fullName}"></div></div>
-          <div class="col-md-3"><strong>Code</strong><div th:text="${student.studentCode}"></div></div>
-          <div class="col-md-3"><strong>Class</strong><div th:text="${student.studentClass.classCode}"></div></div>
-          <div class="col-md-3"><strong>Cumulative GPA</strong><div class="metric-value" th:text="${gpa}"></div></div>
+          <div class="col-md-3"><strong>Sinh viên</strong><div th:text="${student.fullName}">Nguyễn Văn A</div></div>
+          <div class="col-md-3"><strong>Mã sinh viên</strong><div th:text="${student.studentCode}">SV001</div></div>
+          <div class="col-md-3"><strong>Lớp</strong><div th:text="${student.studentClass.classCode}">Lớp</div></div>
+          <div class="col-md-3"><strong>GPA tích lũy</strong><div class="metric-value" th:text="${gpa}">0.00</div></div>
         </div>
       </div>
       <div class="card mb-3" th:each="entry:${groupedResults}">
-        <div class="card-header"><strong th:text="${entry.key}"></strong></div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong th:text="${entry.key}">Học kỳ</strong>
+          <span class="text-muted small" th:text="${#lists.size(entry.value) + ' kết quả'}">0 kết quả</span>
+        </div>
         <div class="card-body table-responsive">
-          <table class="table table-hover">
-            <thead><tr><th>Subject</th><th>Credits</th><th>Total</th><th>Letter</th><th>Grade point</th><th>Result</th></tr></thead>
+          <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+              <th>Môn học</th>
+              <th>Số tín chỉ</th>
+              <th>Tổng điểm</th>
+              <th>Điểm chữ</th>
+              <th>Điểm hệ 4</th>
+              <th>Kết quả</th>
+            </tr>
+            </thead>
             <tbody>
-              <tr th:each="r:${entry.value}">
-                <td><span th:text="${r.section.subject.subjectCode}"></span> - <span th:text="${r.section.subject.subjectName}"></span></td>
-                <td th:text="${r.section.subject.credits}"></td>
-                <td th:text="${r.totalScore}"></td>
-                <td th:text="${r.letterGrade}"></td>
-                <td th:text="${r.gradePoint}"></td>
-                <td><span class="badge" th:classappend="${r.totalScore >= 4} ? ' bg-success' : ' bg-danger'" th:text="${r.totalScore >= 4 ? 'PASS' : 'FAIL'}"></span></td>
-              </tr>
+            <tr th:each="r:${entry.value}">
+              <td><span th:text="${r.section.subject.subjectCode}">CT101</span> - <span th:text="${r.section.subject.subjectName}">Tên môn</span></td>
+              <td th:text="${r.section.subject.credits}">3</td>
+              <td th:text="${r.totalScore}">0</td>
+              <td th:text="${r.letterGrade}">A</td>
+              <td th:text="${r.gradePoint}">4</td>
+              <td><span class="badge" th:classappend="${r.totalScore >= 4} ? ' bg-success' : ' bg-danger'"
+                        th:text="${r.totalScore >= 4 ? 'Đạt' : 'Không đạt'}">Đạt</span></td>
+            </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div class="alert alert-info" th:if="${#maps.isEmpty(groupedResults)}">No published results yet.</div>
+      <div class="alert alert-info" th:if="${#maps.isEmpty(groupedResults)}">Chưa có kết quả được công bố.</div>
     </section>
   </main>
 </div>
+<script th:src="@{/js/app.js}"></script>
 </body>
 </html>

@@ -1,47 +1,80 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Results</title>
+  <title>Kết quả học tập của tôi</title>
   <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
   <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body data-role="student">
 <div class="app-shell">
+  <div class="sidebar-overlay"></div>
   <aside class="sidebar sidebar-student">
     <div class="sidebar-body" th:replace="~{layouts/student-layout :: sidebar('results')}"></div>
     <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
   </aside>
   <main class="main">
     <header class="topbar">
-      <div><h1 class="page-title">My Results</h1><div class="page-subtitle">Only published results are visible.</div></div>
+      <div>
+        <h1 class="page-title">Kết quả học tập của tôi</h1>
+        <div class="page-subtitle">Chỉ hiển thị kết quả đã công bố hoặc đã khóa của chính sinh viên.</div>
+      </div>
       <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
     </header>
     <section class="content">
       <form method="get" th:action="@{/student/results}" class="card card-body mb-3">
-        <div class="row g-2">
-          <div class="col-md-5"><select class="form-select" name="semesterId"><option value="">All semesters</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}" th:selected="${selectedSemesterId == s.id}"></option></select></div>
-          <div class="col-md-5"><select class="form-select" name="subjectId"><option value="">All subjects</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}" th:selected="${selectedSubjectId == s.id}"></option></select></div>
-          <div class="col-md-2"><button class="btn btn-primary w-100">Filter</button></div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-5">
+            <label class="form-label" for="semesterId">Học kỳ</label>
+            <select id="semesterId" class="form-select" name="semesterId">
+              <option value="">Tất cả học kỳ</option>
+              <option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"
+                      th:selected="${selectedSemesterId == s.id}"></option>
+            </select>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label" for="subjectId">Môn học</label>
+            <select id="subjectId" class="form-select" name="subjectId">
+              <option value="">Tất cả môn học</option>
+              <option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"
+                      th:selected="${selectedSubjectId == s.id}"></option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100">Lọc</button>
+          </div>
         </div>
       </form>
       <div class="card">
-        <div class="card-header"><strong>Published results</strong></div>
+        <div class="card-header"><strong>Kết quả đã công bố</strong></div>
         <div class="card-body table-responsive">
-          <table class="table table-hover">
-            <thead><tr><th>Semester</th><th>Subject</th><th>Credits</th><th>Scores</th><th>Total</th><th>Grade</th><th>Result</th></tr></thead>
+          <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+              <th>Học kỳ</th>
+              <th>Môn học</th>
+              <th>Số tín chỉ</th>
+              <th>Điểm thành phần</th>
+              <th>Tổng điểm</th>
+              <th>Điểm chữ</th>
+              <th>Kết quả</th>
+            </tr>
+            </thead>
             <tbody>
-              <tr th:each="r:${results}">
-                <td th:text="${r.section.semester.semesterName}"></td>
-                <td><span th:text="${r.section.subject.subjectCode}"></span><br><small th:text="${r.section.subject.subjectName}"></small></td>
-                <td th:text="${r.section.subject.credits}"></td>
-                <td th:text="${r.attendanceScore + ' / ' + r.midtermScore + ' / ' + r.finalScore}"></td>
-                <td th:text="${r.totalScore}"></td>
-                <td th:text="${r.letterGrade}"></td>
-                <td><span class="badge" th:classappend="${r.totalScore >= 4} ? ' bg-success' : ' bg-danger'" th:text="${r.totalScore >= 4 ? 'PASS' : 'FAIL'}"></span></td>
-              </tr>
-              <tr th:if="${#lists.isEmpty(results)}"><td colspan="7" class="text-center text-muted">No published results.</td></tr>
+            <tr th:each="r:${results}">
+              <td th:text="${r.section.semester.semesterName}">HK1</td>
+              <td><span th:text="${r.section.subject.subjectCode}">CT101</span><br><small th:text="${r.section.subject.subjectName}">Tên môn</small></td>
+              <td th:text="${r.section.subject.credits}">3</td>
+              <td th:text="${r.attendanceScore + ' / ' + r.midtermScore + ' / ' + r.finalScore}">0 / 0 / 0</td>
+              <td th:text="${r.totalScore}">0</td>
+              <td th:text="${r.letterGrade}">A</td>
+              <td><span class="badge" th:classappend="${r.totalScore >= 4} ? ' bg-success' : ' bg-danger'"
+                        th:text="${r.totalScore >= 4 ? 'Đạt' : 'Không đạt'}">Đạt</span></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(results)}">
+              <td colspan="7" class="text-center text-muted py-4">Chưa có kết quả được công bố.</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -49,5 +82,6 @@
     </section>
   </main>
 </div>
+<script th:src="@{/js/app.js}"></script>
 </body>
 </html>
