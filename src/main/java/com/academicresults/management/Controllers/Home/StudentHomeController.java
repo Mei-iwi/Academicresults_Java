@@ -1,52 +1,69 @@
 package com.academicresults.management.Controllers.Home;
 
 import com.academicresults.management.Entity.Student;
+import com.academicresults.management.Services.AcademicCatalogService;
+import com.academicresults.management.Services.StudentResultService;
 import com.academicresults.management.Services.StudentServices;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.security.Principal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
-
 @Controller
 @RequestMapping("/student")
+@RequiredArgsConstructor
 public class StudentHomeController {
 
-    @Autowired
-    private StudentServices studentServices;
+    private final StudentServices studentServices;
+    private final StudentResultService studentResultService;
+    private final AcademicCatalogService catalogService;
 
     @GetMapping("/dashboard")
     public String showStudentDashboard(Principal principal, Model model) {
-        String username = principal.getName();
-        Student student = studentServices.getStudentByAccountUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy dữ liệu sinh viên ứng với tài khoản: " + username));
-
+        Student student = currentStudent(principal);
+        var results = studentResultService.visibleForStudent(student.getId(), null, null);
         model.addAttribute("student", student);
+        model.addAttribute("results", results);
+        model.addAttribute("gpa", studentResultService.gpa(results));
         return "student/dashboard";
+    }
+
+    @GetMapping("/profile")
+    public String showStudentProfile(Principal principal, Model model) {
+        model.addAttribute("student", currentStudent(principal));
+        return "student/profile";
     }
 
     @GetMapping("/transcript")
     public String showStudentTranscript(Principal principal, Model model) {
-        String username = principal.getName();
-        Student student = studentServices.getStudentByAccountUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy dữ liệu sinh viên: " + username));
+        Student student = currentStudent(principal);
+        var allResults = studentResultService.visibleForStudent(student.getId(), null, null);
         model.addAttribute("student", student);
+        model.addAttribute("groupedResults", studentResultService.visibleTranscriptBySemester(student.getId()));
+        model.addAttribute("gpa", studentResultService.gpa(allResults));
         return "student/transcript";
     }
 
     @GetMapping("/results")
     public String showStudentResults(Principal principal,
-                                     @RequestParam(required = false) Long semesterId,
+                                     @RequestParam(required = false) Integer semesterId,
+                                     @RequestParam(required = false) Long subjectId,
                                      Model model) {
-        String username = principal.getName();
-        Student student = studentServices.getStudentByAccountUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy dữ liệu sinh viên: " + username));
-
+        Student student = currentStudent(principal);
         model.addAttribute("student", student);
+        model.addAttribute("results", studentResultService.visibleForStudent(student.getId(), semesterId, subjectId));
+        model.addAttribute("semesters", catalogService.semesters(null));
+        model.addAttribute("subjects", catalogService.subjects(null));
         model.addAttribute("selectedSemesterId", semesterId);
+        model.addAttribute("selectedSubjectId", subjectId);
         return "student/results";
+    }
+
+    private Student currentStudent(Principal principal) {
+        return studentServices.getStudentByAccountUsername(principal.getName())
+                .orElseThrow(() -> new IllegalArgumentException("Student data not found for account: " + principal.getName()));
     }
 }

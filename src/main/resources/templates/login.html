@@ -84,6 +84,10 @@
             Tài khoản hoặc mật khẩu không chính xác.
           </div>
 
+          <div class="alert alert-danger auth-alert" th:if="${param.disabled}">
+            Tài khoản đã bị vô hiệu hóa.
+          </div>
+
           <div class="alert alert-success auth-alert" th:if="${param.logout}">
             Đăng xuất thành công.
           </div>

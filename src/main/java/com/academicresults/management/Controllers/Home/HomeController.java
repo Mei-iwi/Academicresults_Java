@@ -2,7 +2,6 @@ package com.academicresults.management.Controllers.Home;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class HomeController {
@@ -17,9 +16,8 @@ public class HomeController {
         return "login";
     }
 
-    @PostMapping("/logout")
-    public String logout() {
-        return "/login";
+    @GetMapping("/403")
+    public String forbidden() {
+        return "error/403";
     }
-
 }

@@ -22,8 +22,27 @@ public interface StudentRepository extends JpaRepository<Student, Long>
 
     boolean existsByStudentCode(String studentCode);
 
-    @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s JOIN Account a ON a.student.id = s.id WHERE a.username = :username")
+    @org.springframework.data.jpa.repository.Query("""
+            select s
+            from Student s
+            join fetch s.studentClass c
+            left join fetch c.major m
+            left join Account a on a.student.id = s.id
+            where a.username = :username
+            """)
     java.util.Optional<Student> findByAccountUsername(@org.springframework.data.repository.query.Param("username") String username);
 
-
+    @org.springframework.data.jpa.repository.Query("""
+            select s
+            from Student s
+            join fetch s.studentClass c
+            where (:keyword is null or lower(s.studentCode) like lower(concat('%', :keyword, '%'))
+                or lower(s.fullName) like lower(concat('%', :keyword, '%'))
+                or lower(s.email) like lower(concat('%', :keyword, '%')))
+              and (:classId is null or c.id = :classId)
+              and (:status is null or s.status = :status)
+            """)
+    java.util.List<Student> search(@org.springframework.data.repository.query.Param("keyword") String keyword,
+                                   @org.springframework.data.repository.query.Param("classId") Long classId,
+                                   @org.springframework.data.repository.query.Param("status") StudentStatus status);
 }

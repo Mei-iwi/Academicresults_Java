@@ -28,7 +28,7 @@ public class GlobalModelAttribute {
 
         String userName = authentication.getName();
 
-        Account account = accountRepository.findByUsername(userName).orElse(null);
+        Account account = accountRepository.findCurrentUserByUserName(userName).orElse(null);
 
         if (account == null) {
             return new CurrentUserInfo(userName, userName, "");

@@ -13,6 +13,10 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,13 +37,17 @@ public class CourseSection {
     @Column(name = "section_id")
     private Long id;
 
+    @NotBlank(message = "Section code is required.")
+    @Size(max = 30, message = "Section code must be at most 30 characters.")
     @Column(name = "section_code", nullable = false, unique = true, length = 30)
     private String sectionCode;
 
+    @NotNull(message = "Subject is required.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
+    @NotNull(message = "Semester is required.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
@@ -52,6 +60,7 @@ public class CourseSection {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @Min(value = 0, message = "Max students must be non-negative.")
     @Column(name = "max_students")
     private Integer maxStudents;
 

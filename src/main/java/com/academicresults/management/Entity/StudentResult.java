@@ -14,6 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -50,12 +53,21 @@ public class StudentResult {
     @JoinColumn(name = "section_id", nullable = false)
     private CourseSection section;
 
+    @NotNull(message = "Attendance score is required.")
+    @DecimalMin(value = "0.0", message = "Attendance score must be between 0 and 10.")
+    @DecimalMax(value = "10.0", message = "Attendance score must be between 0 and 10.")
     @Column(name = "attendance_score", precision = 4, scale = 2)
     private BigDecimal attendanceScore;
 
+    @NotNull(message = "Midterm score is required.")
+    @DecimalMin(value = "0.0", message = "Midterm score must be between 0 and 10.")
+    @DecimalMax(value = "10.0", message = "Midterm score must be between 0 and 10.")
     @Column(name = "midterm_score", precision = 4, scale = 2)
     private BigDecimal midtermScore;
 
+    @NotNull(message = "Final score is required.")
+    @DecimalMin(value = "0.0", message = "Final score must be between 0 and 10.")
+    @DecimalMax(value = "10.0", message = "Final score must be between 0 and 10.")
     @Column(name = "final_score", precision = 4, scale = 2)
     private BigDecimal finalScore;
 

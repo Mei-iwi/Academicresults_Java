@@ -1,6 +1,7 @@
 package com.academicresults.management.Controllers.Home;
 
 import com.academicresults.management.Entity.Student;
+import com.academicresults.management.Entity.enums.Gender;
 import com.academicresults.management.Entity.enums.StudentStatus;
 import com.academicresults.management.Services.ClassServices;
 import com.academicresults.management.Services.StudentServices;
@@ -45,10 +46,21 @@ public class StudentController
                 students = studentServices.getAllStudents();
             }
         } else {
-            students = studentServices.getAllStudents();
+            StudentStatus studentStatus = null;
+            if (status != null && !status.trim().isEmpty()) {
+                try {
+                    studentStatus = StudentStatus.valueOf(status.trim().toUpperCase());
+                } catch (IllegalArgumentException ignored) {
+                    studentStatus = null;
+                }
+            }
+            students = studentServices.searchStudents(search, classId, studentStatus);
         }
         model.addAttribute("students", students);
         model.addAttribute("classes", classServices.getAllClass());
+        model.addAttribute("statuses", StudentStatus.values());
+        model.addAttribute("genders", Gender.values());
+        model.addAttribute("student", new Student());
         return "employee/students";
     }
 

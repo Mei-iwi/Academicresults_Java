@@ -3,6 +3,7 @@ package com.academicresults.management.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,10 +40,11 @@ public class SecurityConfig {
                         .permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/employee/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/employee/**").hasRole("EMPLOYEE")
                         .requestMatchers("/student/**").hasRole("STUDENT")
+                        .requestMatchers("/403").authenticated()
 
-                        .anyRequest().authenticated())
+                        .anyRequest().denyAll())
 
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -50,15 +52,27 @@ public class SecurityConfig {
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .successHandler(loginSuccessHandler)
-                        .failureUrl("/login?error")
+                        .failureHandler((request, response, exception) -> {
+                            String targetUrl = exception instanceof DisabledException
+                                    ? "/login?disabled"
+                                    : "/login?error";
+                            response.sendRedirect(targetUrl);
+                        })
                         .permitAll())
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "remember-me")
                         .permitAll())
+                .rememberMe(rememberMe -> rememberMe
+                        .rememberMeParameter("remember-me")
+                        .key("academic-results-remember-me")
+                        .tokenValiditySeconds(14 * 24 * 60 * 60)
+                        .userDetailsService(customUserDetailsService))
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/403"))
                 .sessionManagement(session -> session
                         .sessionFixation(sessionFixation -> sessionFixation.migrateSession())
                         .maximumSessions(1)

@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +29,8 @@ public class AcademicYear {
     @Column(name = "academic_year_id")
     private Integer id;
 
+    @NotBlank(message = "Academic year name is required.")
+    @Size(max = 20, message = "Academic year name must be at most 20 characters.")
     @Column(name = "year_name", nullable = false, unique = true, length = 20)
     private String yearName;
 

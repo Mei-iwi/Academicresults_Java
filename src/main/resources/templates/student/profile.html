@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Profile</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body data-role="student">
+<div class="app-shell">
+  <aside class="sidebar sidebar-student">
+    <div class="sidebar-body" th:replace="~{layouts/student-layout :: sidebar('profile')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><h1 class="page-title">Profile</h1><div class="page-subtitle">Your academic account information.</div></div>
+      <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+    <section class="content">
+      <div class="card">
+        <div class="card-body row g-3">
+          <div class="col-md-4"><strong>Student code</strong><div th:text="${student.studentCode}"></div></div>
+          <div class="col-md-4"><strong>Full name</strong><div th:text="${student.fullName}"></div></div>
+          <div class="col-md-4"><strong>Class</strong><div th:text="${student.studentClass.classCode}"></div></div>
+          <div class="col-md-4"><strong>Email</strong><div th:text="${student.email}"></div></div>
+          <div class="col-md-4"><strong>Phone</strong><div th:text="${student.phone}"></div></div>
+          <div class="col-md-4"><strong>Status</strong><div th:text="${student.status}"></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

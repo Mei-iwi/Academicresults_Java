@@ -1,126 +1,79 @@
 <!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="route" content="/employee/results">
-  <title>Nhập điểm | Quản lý kết quả học tập</title>
-  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
-  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+  <title>Results</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-
 <body data-role="employee">
-  <div class="app-shell">
+<div class="app-shell">
+  <aside class="sidebar sidebar-employee">
+    <div class="sidebar-body" th:replace="~{layouts/employee-layout :: sidebar('results')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><h1 class="page-title">Student Results</h1><div class="page-subtitle">Create, edit, publish, lock, and delete academic results.</div></div>
+      <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+    <section class="content">
+      <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+      <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
-    <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-employee" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
-        <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
-          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+      <form method="get" th:action="@{/employee/results}" class="card card-body mb-3">
+        <div class="row g-2">
+          <div class="col-md-3"><input class="form-control" name="keyword" placeholder="Search student or subject"></div>
+          <div class="col-md-3"><select class="form-select" name="semesterId"><option value="">All semesters</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option></select></div>
+          <div class="col-md-3"><select class="form-select" name="subjectId"><option value="">All subjects</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option></select></div>
+          <div class="col-md-2"><select class="form-select" name="status"><option value="">All status</option><option th:each="s:${statuses}" th:value="${s}" th:text="${s}"></option></select></div>
+          <div class="col-md-1"><button class="btn btn-primary w-100">Filter</button></div>
+        </div>
+      </form>
+
+      <div class="card mb-3">
+        <div class="card-header"><strong>Result form</strong></div>
+        <div class="card-body">
+          <form method="post" th:action="@{/employee/results}" class="row g-3">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-3"><label class="form-label">Student</label><select class="form-select" name="studentId" required><option th:each="s:${students}" th:value="${s.id}" th:text="${s.studentCode + ' - ' + s.fullName}"></option></select></div>
+            <div class="col-md-3"><label class="form-label">Course section</label><select class="form-select" name="sectionId" required><option th:each="s:${courseSections}" th:value="${s.id}" th:text="${s.sectionCode + ' - ' + s.subject.subjectName}"></option></select></div>
+            <div class="col-md-1"><label class="form-label">Attend</label><input class="form-control" name="attendanceScore" type="number" min="0" max="10" step="0.01" required></div>
+            <div class="col-md-1"><label class="form-label">Midterm</label><input class="form-control" name="midtermScore" type="number" min="0" max="10" step="0.01" required></div>
+            <div class="col-md-1"><label class="form-label">Final</label><input class="form-control" name="finalScore" type="number" min="0" max="10" step="0.01" required></div>
+            <div class="col-md-2"><label class="form-label">Status</label><select class="form-select" name="status"><option th:each="s:${statuses}" th:value="${s}" th:text="${s}"></option></select></div>
+            <div class="col-md-1 d-flex align-items-end"><button class="btn btn-primary w-100">Save</button></div>
+            <div class="col-12"><input class="form-control" name="note" placeholder="Note"></div>
+          </form>
         </div>
       </div>
-      <div class="sidebar-body">
-        <div th:replace="~{/layouts/employee-layout :: sidebar('results')}"></div>
 
+      <div class="card">
+        <div class="card-header"><strong>Results</strong></div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover align-middle">
+            <thead><tr><th>Student</th><th>Section</th><th>Scores</th><th>Total</th><th>Grade</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr th:each="r:${results}">
+                <td><span th:text="${r.student.studentCode}"></span><br><small th:text="${r.student.fullName}"></small></td>
+                <td><span th:text="${r.section.sectionCode}"></span><br><small th:text="${r.section.subject.subjectName}"></small></td>
+                <td th:text="${r.attendanceScore + ' / ' + r.midtermScore + ' / ' + r.finalScore}"></td>
+                <td th:text="${r.totalScore}"></td>
+                <td th:text="${r.letterGrade + ' (' + r.gradePoint + ')'}"></td>
+                <td><span class="badge bg-secondary" th:text="${r.resultStatus}"></span></td>
+                <td class="d-flex gap-1">
+                  <form method="post" th:action="@{/employee/results/{id}/status(id=${r.id})}"><input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><input type="hidden" name="status" value="PUBLISHED"><button class="btn btn-sm btn-success">Publish</button></form>
+                  <form method="post" th:action="@{/employee/results/{id}/status(id=${r.id})}"><input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><input type="hidden" name="status" value="LOCKED"><button class="btn btn-sm btn-warning">Lock</button></form>
+                  <form method="post" th:action="@{/employee/results/delete/{id}(id=${r.id})}"><input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><button class="btn btn-sm btn-danger">Delete</button></form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="sidebar-footer">
-        <div th:replace="~{layouts/User :: logout}"></div>
-
-      </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-          <div>
-            <h1 class="page-title">Nhập điểm</h1>
-            <div class="page-subtitle">Chọn học kỳ/lớp học phần, nhập điểm từng sinh viên và lưu nháp.</div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-
-        </div>
-      </header>
-      <section class="content">
-        <div class="card mb-4">
-          <div class="card-header"><strong>Chọn lớp học phần để nhập điểm</strong></div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-4 mb-3"><label class="form-label required">Học kỳ</label><select class="form-select">
-                  <option>HK1 2025-2026</option>
-                  <option>HK2 2025-2026</option>
-                </select></div>
-              <div class="col-md-4 mb-3"><label class="form-label required">Lớp học phần</label><select
-                  class="form-select">
-                  <option>JAVA01 - Công nghệ Java</option>
-                  <option>CSDL02 - Hệ cơ sở dữ liệu</option>
-                </select></div>
-              <div class="col-md-4 mb-3"><label class="form-label">Trạng thái</label><input class="form-control"
-                  value="Đang nhập nháp" readonly></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header d-flex justify-content-between"><strong>Bảng nhập điểm từng sinh viên</strong>
-            <div class="action-group"><button class="btn btn-warning" data-action="draft">Lưu nháp</button><a
-                class="btn btn-success" href="/employee/results-publish">Công bố/khóa điểm</a></div>
-          </div>
-          <div class="card-body table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Mã SV</th>
-                  <th>Họ tên</th>
-                  <th>Chuyên cần</th>
-                  <th>Giữa kỳ</th>
-                  <th>Cuối kỳ</th>
-                  <th>Điểm tổng kết</th>
-                  <th>Ghi chú</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>SV001</td>
-                  <td>Trần Thị B</td>
-                  <td><input class="form-control score-input" value="8.0"></td>
-                  <td><input class="form-control score-input" value="7.5"></td>
-                  <td><input class="form-control score-input" value="8.0"></td>
-                  <td><strong>7.9</strong></td>
-                  <td><input class="form-control" placeholder=""></td>
-                </tr>
-                <tr>
-                  <td>SV002</td>
-                  <td>Lê Văn C</td>
-                  <td><input class="form-control score-input" value="7.0"></td>
-                  <td><input class="form-control score-input" value="6.5"></td>
-                  <td><input class="form-control score-input" value="7.0"></td>
-                  <td><strong>6.8</strong></td>
-                  <td><input class="form-control" placeholder=""></td>
-                </tr>
-                <tr>
-                  <td>SV003</td>
-                  <td>Phạm Minh D</td>
-                  <td><input class="form-control score-input" value=""></td>
-                  <td><input class="form-control score-input" value=""></td>
-                  <td><input class="form-control score-input" value=""></td>
-                  <td><span class="text-muted">Chưa tính</span></td>
-                  <td><input class="form-control" value="Chưa nhập đủ"></td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="alert alert-info mb-0">Giao diện mẫu: backend Spring Boot cần kiểm tra điểm trong khoảng 0-10,
-              tính điểm tổng kết theo quy định nhóm chọn và chỉ cho sinh viên xem khi đã công bố.</div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+    </section>
+  </main>
+</div>
 </body>
-
 </html>
