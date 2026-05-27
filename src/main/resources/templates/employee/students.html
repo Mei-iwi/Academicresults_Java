@@ -11,17 +11,17 @@
 </head>
 
 <body data-role="employee">
-  <div class="app-shell">
+<div class="app-shell">
 
-    <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-employee" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
-        <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
-          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
-        </div>
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar sidebar-employee" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">KQ</div>
+      <div>
+        <div class="sidebar-title">Quản lý kết quả</div>
+        <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
       </div>
+<<<<<<< Updated upstream
       <div class="sidebar-body">
         <div th:replace="~{/layouts/employee-layout :: sidebar('students')}"></div>
 
@@ -29,133 +29,264 @@
       <div class="sidebar-footer">
         <div th:replace="~{layouts/User :: logout}"></div>
 
+=======
+    </div>
+    <div class="sidebar-body">
+      <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
+      <nav class="sidebar-nav">
+        <a class="" href="/employee/departments" th:href="@{/employee/departments}"><span
+                class="icon">🏢</span><span>Khoa</span></a>
+        <a class="" href="/employee/majors" th:href="@{/employee/majors}"><span
+                class="icon">🧭</span><span>Ngành</span></a>
+        <a class="" href="/employee/classes" th:href="@{/employee/classes}"><span
+                class="icon">🏫</span><span>Lớp</span></a>
+        <a class="active" href="/employee/students" th:href="@{/employee/students}"><span
+                class="icon">🎓</span><span>Sinh viên</span></a>
+        <a class="" href="/employee/subjects" th:href="@{/employee/subjects}"><span class="icon">📚</span><span>Môn
+              học</span></a>
+        <a class="" href="/employee/academic-years" th:href="@{/employee/academic-years}"><span
+                class="icon">📅</span><span>Năm học</span></a>
+        <a class="" href="/employee/semesters" th:href="@{/employee/semesters}"><span class="icon">🗓</span><span>Học
+              kỳ</span></a>
+        <a class="" href="/employee/course-sections" th:href="@{/employee/course-sections}"><span
+                class="icon">🧩</span><span>Lớp học phần</span></a>
+        <a class="" href="/employee/results" th:href="@{/employee/results}"><span class="icon">📝</span><span>Nhập
+              điểm</span></a>
+        <a class="" href="/employee/reports" th:href="@{/employee/reports}"><span class="icon">📊</span><span>Báo
+              cáo</span></a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="logout-button"><span class="icon">↩</span><span>Đăng xuất</span></button>
+      </form>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+        <div>
+          <h1 class="page-title">Quản lý sinh viên</h1>
+          <div class="page-subtitle">Danh sách, tìm kiếm, lọc theo lớp và form thêm/sửa.</div>
+        </div>
       </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+      <div class="d-flex align-items-center gap-2 ms-auto text-end">
+        <span class="route-pill">/employee/students</span>
+        <span class="badge bg-light">Quản lý đào tạo</span>
+>>>>>>> Stashed changes
+      </div>
+    </header>
+    <section class="content">
+
+      <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}">Thông báo thành công</span>
+      </div>
+      <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}">Thông báo lỗi</span>
+      </div>
+
+      <form th:action="@{/employee/students}" method="get" class="card mb-4">
+        <div class="card-header d-flex justify-content-between">
+          <strong>Tìm kiếm sinh viên</strong>
+          <button type="button" class="btn btn-primary" data-open-modal="#studentModal" onclick="prepareAddForm()">+ Thêm sinh viên</button>
+        </div>
+
+        <div class="card-body toolbar">
+
           <div>
-            <h1 class="page-title">Quản lý sinh viên</h1>
-            <div class="page-subtitle">Danh sách, tìm kiếm, lọc theo lớp và form thêm/sửa.</div>
+            <label class="form-label">Từ khóa</label>
+            <input type="text" name="search" th:value="${param.search}" class="form-control" data-table-search="#studentTable" placeholder="Mã SV, họ tên, email">
+          </div>
+
+          <div>
+            <label class="form-label">Lớp</label>
+            <select name="classId" class="form-select" onchange="this.form.submit()">
+              <option value="">Tất cả</option>
+              <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.className}" th:selected="${param.classId != null && param.classId[0] == cls.id.toString()}"></option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Trạng thái</label>
+            <select name="status" class="form-select" onchange="this.form.submit()">
+              <option value="">Tất cả</option>
+              <option value="STUDYING" th:selected="${param.status != null && param.status[0] == 'STUDYING'}">Đang học</option>
+              <option value="PAUSED" th:selected="${param.status != null && param.status[0] == 'PAUSED'}">Tạm nghỉ</option>
+              <option value="GRADUATED" th:selected="${param.status != null && param.status[0] == 'GRADUATED'}">Đã tốt nghiệp</option>
+              <option value="DROPPED" th:selected="${param.status != null && param.status[0] == 'DROPPED'}">Thôi học</option>
+            </select>
           </div>
         </div>
+<<<<<<< Updated upstream
         <div class="d-flex align-items-center gap-2 ms-auto text-end">
           <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
 
+=======
+      </form>
+      <div class="card">
+        <div class="card-header"><strong>Danh sách sinh viên</strong></div>
+        <div class="card-body table-responsive">
+          <table id="studentTable" class="table table-hover">
+            <thead>
+            <tr>
+              <th>Mã SV</th>
+              <th>Họ tên</th>
+              <th>Ngày sinh</th>
+              <th>Lớp</th>
+              <th>Email</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="student : ${students}">
+              <td th:text="${student.studentCode}">Mã SV thực tế</td>
+              <td th:text="${student.fullName}">Họ tên thực tế</td>
+              <td th:text="${student.dateOfBirth != null ? #temporals.format(student.dateOfBirth, 'dd/MM/yyyy') : ''}">Ngày sinh thực tế</td>
+              <td th:text="${student.studentClass != null ? student.studentClass.className : 'Chưa xếp lớp'}">Lớp thực tế</td>
+              <td th:text="${student.email}">Email thực tế</td>
+
+              <td>
+                <span th:if="${student.status != null && student.status.name() == 'STUDYING'}" class="badge bg-success">Đang học</span>
+                <span th:if="${student.status != null && student.status.name() == 'PAUSED'}" class="badge bg-warning">Tạm nghỉ</span>
+                <span th:if="${student.status != null && student.status.name() == 'GRADUATED'}" class="badge bg-info">Đã tốt nghiệp</span>
+                <span th:if="${student.status != null && student.status.name() == 'DROPPED'}" class="badge bg-danger">Thôi học</span>
+              </td>
+
+              <td class="action-group">
+                <button type="button" class="btn btn-sm btn-outline-primary" data-open-modal="#studentModal"
+                        th:data-id="${student.id}"
+                        th:data-code="${student.studentCode}"
+                        th:data-name="${student.fullName}"
+                        th:data-dob="${student.dateOfBirth}"
+                        th:data-gender="${student.gender}"
+                        th:data-class="${student.studentClass != null ? student.studentClass.id : ''}"
+                        th:data-email="${student.email}"
+                        th:data-phone="${student.phone}"
+                        th:data-address="${student.address}"
+                        th:data-status="${student.status}"
+                        onclick="prepareEditForm(this)">Sửa</button>
+                <a th:href="@{/employee/students/detail/{id}(id=${student.id})}" class="btn btn-sm btn-secondary text-decoration-none text-white">Xem điểm</a>
+                <a th:href="@{/employee/students/delete/{id}(id=${student.id})}" class="btn btn-sm btn-danger text-decoration-none text-white" onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?')">Xóa</a>
+              </td>
+
+            </tr>
+            <tr th:if="${#lists.isEmpty(students)}">
+              <td colspan="7" class="text-center text-muted py-3">Hệ thống trống rỗng. Hãy nhập sinh viên mới vào nhé!</td>
+            </tr>
+            </tbody>
+          </table>
+>>>>>>> Stashed changes
         </div>
-      </header>
-      <section class="content">
-        <div class="card mb-4">
-          <div class="card-header d-flex justify-content-between"><strong>Tìm kiếm sinh viên</strong><button
-              class="btn btn-primary" data-open-modal="#studentModal">+ Thêm sinh viên</button></div>
-          <div class="card-body toolbar">
-            <div><label class="form-label">Từ khóa</label><input class="form-control" data-table-search="#studentTable"
-                placeholder="Mã SV, họ tên, email"></div>
-            <div><label class="form-label">Lớp</label><select class="form-select">
-                <option>Tất cả</option>
-                <option>14DHTH01</option>
-                <option>14DHTH02</option>
-              </select></div>
-            <div><label class="form-label">Trạng thái</label><select class="form-select">
-                <option>Tất cả</option>
-                <option>Đang học</option>
-                <option>Tạm nghỉ</option>
-                <option>Đã tốt nghiệp</option>
-              </select></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><strong>Danh sách sinh viên</strong></div>
-          <div class="card-body table-responsive">
-            <table id="studentTable" class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Mã SV</th>
-                  <th>Họ tên</th>
-                  <th>Ngày sinh</th>
-                  <th>Lớp</th>
-                  <th>Email</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>SV001</td>
-                  <td>Trần Thị B</td>
-                  <td>12/03/2005</td>
-                  <td>14DHTH01</td>
-                  <td>sv001@school.edu.vn</td>
-                  <td><span class="badge bg-success">Đang học</span></td>
-                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
-                      data-open-modal="#studentModal">Sửa</button><button class="btn btn-sm btn-secondary">Xem
-                      điểm</button></td>
-                </tr>
-                <tr>
-                  <td>SV002</td>
-                  <td>Lê Văn C</td>
-                  <td>24/08/2005</td>
-                  <td>14DHTH01</td>
-                  <td>sv002@school.edu.vn</td>
-                  <td><span class="badge bg-success">Đang học</span></td>
-                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
-                      data-open-modal="#studentModal">Sửa</button><button class="btn btn-sm btn-secondary">Xem
-                      điểm</button></td>
-                </tr>
-                <tr>
-                  <td>SV003</td>
-                  <td>Phạm Minh D</td>
-                  <td>18/11/2004</td>
-                  <td>14DHTH02</td>
-                  <td>sv003@school.edu.vn</td>
-                  <td><span class="badge bg-warning">Tạm nghỉ</span></td>
-                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
-                      data-open-modal="#studentModal">Sửa</button><button class="btn btn-sm btn-secondary">Xem
-                      điểm</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="modal" id="studentModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header"><strong>Thêm / sửa sinh viên</strong><button class="btn btn-sm btn-light"
-                  data-close-modal>×</button></div>
+      </div>
+
+      <div class="modal" id="studentModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <strong>Thêm / sửa sinh viên</strong>
+              <button class="btn btn-sm btn-light" data-close-modal>×</button>
+            </div>
+
+            <form id="studentBackendForm" method="post" th:action="@{/employee/students/add}" th:object="${student}">
               <div class="modal-body">
+                <input type="hidden" id="modalStudentId" name="id">
                 <div class="row">
-                  <div class="col-md-6 mb-3"><label class="form-label required">Mã sinh viên</label><input
-                      class="form-control" value="SV001"></div>
-                  <div class="col-md-6 mb-3"><label class="form-label required">Họ tên</label><input
-                      class="form-control" value="Trần Thị B"></div>
-                  <div class="col-md-6 mb-3"><label class="form-label">Ngày sinh</label><input type="date"
-                      class="form-control"></div>
-                  <div class="col-md-6 mb-3"><label class="form-label">Giới tính</label><select class="form-select">
-                      <option>Nữ</option>
-                      <option>Nam</option>
-                      <option>Khác</option>
-                    </select></div>
-                  <div class="col-md-6 mb-3"><label class="form-label required">Lớp</label><select class="form-select">
-                      <option>14DHTH01</option>
-                      <option>14DHTH02</option>
-                    </select></div>
-                  <div class="col-md-6 mb-3"><label class="form-label">Email</label><input class="form-control"
-                      value="sv001@school.edu.vn"></div>
-                  <div class="col-12 mb-3"><label class="form-label">Địa chỉ</label><input class="form-control"
-                      placeholder="Địa chỉ liên hệ"></div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required">Mã sinh viên</label>
+                    <input type="text" id="modalStudentCode" name="studentCode" class="form-control" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required">Họ tên</label>
+                    <input type="text" id="modalFullName" name="fullName" class="form-control" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Ngày sinh</label>
+                    <input type="date" id="modalDateOfBirth" name="dateOfBirth" class="form-control">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Giới tính</label>
+                    <select id="modalGender" name="gender" class="form-select">
+                      <option value="FEMALE">Nữ</option>
+                      <option value="MALE">Nam</option>
+                      <option value="OTHER">Khác</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required">Lớp</label>
+                    <select id="modalStudentClass" name="studentClass.id" class="form-select">
+                      <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.className}"></option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3" id="modalStatusGroup">
+                    <label class="form-label fw-bold text-primary">Trạng thái học tập</label>
+                    <select id="modalStatus" name="status" class="form-select border border-primary">
+                      <option value="STUDYING">Đang học</option>
+                      <option value="PAUSED">Tạm nghỉ</option>
+                      <option value="GRADUATED">Đã tốt nghiệp</option>
+                      <option value="DROPPED">Thôi học</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="modalEmail" name="email" class="form-control">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" id="modalPhone" name="phone" class="form-control">
+                  </div>
+                  <div class="col-12 mb-3">
+                    <label class="form-label">Địa chỉ</label>
+                    <input type="text" id="modalAddress" name="address" class="form-control" placeholder="Địa chỉ liên hệ">
+                  </div>
                 </div>
               </div>
-              <div class="modal-footer"><button class="btn btn-light" data-close-modal>Đóng</button><button
-                  class="btn btn-primary" data-action="save" data-close-modal>Lưu sinh viên</button></div>
-            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-close-modal>Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu sinh viên</button>
+              </div>
+            </form>
+
           </div>
         </div>
-      </section>
-    </main>
-  </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+      </div>
+
+    </section>
+  </main>
+</div>
+<script src="../../bootstrap/js/bootstrap-local.js" th:href="@{/bootstrap/js/bootstrap-local.js}"></script>
+<script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+<script>
+  const backendForm = document.getElementById('studentBackendForm');
+
+  function prepareAddForm() {
+    backendForm.setAttribute('action', '/employee/students/add');
+    backendForm.reset();
+    document.getElementById('modalStudentId').value = "";
+    document.getElementById('modalStudentCode').readOnly = false;
+    document.getElementById('modalStatusGroup').style.display = "none";
+  }
+
+  function prepareEditForm(btn)
+  {
+    const id = btn.getAttribute('data-id');
+    backendForm.setAttribute('action', '/employee/students/update/' + id);
+
+    document.getElementById('modalStudentId').value = id;
+    document.getElementById('modalStudentCode').value = btn.getAttribute('data-code');
+    document.getElementById('modalStudentCode').readOnly = true;
+    document.getElementById('modalFullName').value = btn.getAttribute('data-name');
+    document.getElementById('modalDateOfBirth').value = btn.getAttribute('data-dob');
+    document.getElementById('modalGender').value = btn.getAttribute('data-gender');
+    document.getElementById('modalStudentClass').value = btn.getAttribute('data-class');
+    document.getElementById('modalEmail').value = btn.getAttribute('data-email');
+    document.getElementById('modalPhone').value = btn.getAttribute('data-phone');
+    document.getElementById('modalAddress').value = btn.getAttribute('data-address');
+    document.getElementById('modalStatusGroup').style.display = "block";
+    document.getElementById('modalStatus').value = btn.getAttribute('data-status');
+  }
+</script>
 </body>
 
 </html>
