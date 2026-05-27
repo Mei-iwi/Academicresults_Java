@@ -31,11 +31,6 @@ public class employeesController {
         return "/employee/classes.html";
     }
 
-    @GetMapping("/students")
-    public String students() {
-        return "/employee/students.html";
-    }
-
     @GetMapping("/subjects")
     public String subjects() {
         return "/employee/subjects.html";

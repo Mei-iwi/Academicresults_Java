@@ -21,15 +21,13 @@
         <div class="sidebar-title">Quản lý kết quả</div>
         <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
       </div>
-<<<<<<< Updated upstream
       <div class="sidebar-body">
         <div th:replace="~{/layouts/employee-layout :: sidebar('students')}"></div>
 
       </div>
       <div class="sidebar-footer">
         <div th:replace="~{layouts/User :: logout}"></div>
-
-=======
+      </div>
     </div>
     <div class="sidebar-body">
       <div class="sidebar-section">Menu Nhân viên giáo vụ</div>
@@ -74,7 +72,6 @@
       <div class="d-flex align-items-center gap-2 ms-auto text-end">
         <span class="route-pill">/employee/students</span>
         <span class="badge bg-light">Quản lý đào tạo</span>
->>>>>>> Stashed changes
       </div>
     </header>
     <section class="content">
@@ -104,6 +101,7 @@
             <select name="classId" class="form-select" onchange="this.form.submit()">
               <option value="">Tất cả</option>
               <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.className}" th:selected="${param.classId != null && param.classId[0] == cls.id.toString()}"></option>
+              <option value="">-- Chọn lớp --</option>
             </select>
           </div>
           <div>
@@ -117,11 +115,9 @@
             </select>
           </div>
         </div>
-<<<<<<< Updated upstream
         <div class="d-flex align-items-center gap-2 ms-auto text-end">
           <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-
-=======
+        </div>
       </form>
       <div class="card">
         <div class="card-header"><strong>Danh sách sinh viên</strong></div>
@@ -177,7 +173,6 @@
             </tr>
             </tbody>
           </table>
->>>>>>> Stashed changes
         </div>
       </div>
 
@@ -195,11 +190,25 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label class="form-label required">Mã sinh viên</label>
-                    <input type="text" id="modalStudentCode" name="studentCode" class="form-control" required>
+                    <input type="text"
+                           id="modalStudentCode"
+                           name="studentCode"
+                           class="form-control"
+                           required
+                           oninvalid="this.setCustomValidity('Mã sinh viên không được để trống')"
+                           oninput="this.setCustomValidity('')">
+                    <small class="text-danger" id="studentCodeError"></small>
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label required">Họ tên</label>
-                    <input type="text" id="modalFullName" name="fullName" class="form-control" required>
+                    <input type="text"
+                           id="modalFullName"
+                           name="fullName"
+                           class="form-control"
+                           required
+                           oninvalid="this.setCustomValidity('Họ tên không được để trống')"
+                           oninput="this.setCustomValidity('')">
+                    <small class="text-danger" id="fullNameError"></small>
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày sinh</label>
@@ -215,8 +224,19 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label required">Lớp</label>
-                    <select id="modalStudentClass" name="studentClass.id" class="form-select">
-                      <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.className}"></option>
+                    <select id="modalStudentClass"
+                            name="studentClass.id"
+                            class="form-select"
+                            required
+                            oninvalid="this.setCustomValidity('Vui lòng chọn lớp')"
+                            oninput="this.setCustomValidity('')">
+
+                      <option value="">-- Chọn lớp --</option>
+
+                      <option th:each="cls : ${classes}"
+                              th:value="${cls.id}"
+                              th:text="${cls.className}">
+                      </option>
                     </select>
                   </div>
                   <div class="col-md-6 mb-3" id="modalStatusGroup">

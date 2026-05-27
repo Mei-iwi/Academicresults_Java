@@ -1,4 +1,4 @@
-package com.academicresults.management.Controllers.Home;
+package com.academicresults.management.Controllers.StudentsController;
 
 import com.academicresults.management.Entity.Student;
 import com.academicresults.management.Services.StudentServices;
