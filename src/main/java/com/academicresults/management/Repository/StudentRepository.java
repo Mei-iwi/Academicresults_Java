@@ -22,6 +22,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>
 
     boolean existsByStudentCode(String studentCode);
 
+    boolean existsByStudentCodeAndIdNot(String studentCode, Long id);
+
     @org.springframework.data.jpa.repository.Query("""
             select s
             from Student s

@@ -2,6 +2,7 @@ package com.academicresults.management.Controllers.AdminController;
 
 import com.academicresults.management.Repository.AccountRepository;
 import com.academicresults.management.Repository.StudentResultRepository;
+import com.academicresults.management.Entity.enums.ResultStatus;
 import com.academicresults.management.Entity.enums.RoleCode;
 import com.academicresults.management.Services.AccountService;
 import com.academicresults.management.Services.AcademicCatalogService;
@@ -21,7 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/admin")
 @SessionAttributes
 @RequiredArgsConstructor
-public class adminController {
+public class AdminController {
 
     private final AccountRepository accountRepository;
     private final StudentServices studentServices;
@@ -37,6 +38,12 @@ public class adminController {
         model.addAttribute("resultCount", resultRepository.count());
         model.addAttribute("departmentCount", catalogService.departmentCount());
         model.addAttribute("courseSectionCount", catalogService.courseSectionCount());
+        model.addAttribute("draftResultCount", resultRepository.countByResultStatus(ResultStatus.DRAFT));
+        model.addAttribute("publishedResultCount", resultRepository.countByResultStatus(ResultStatus.PUBLISHED));
+        model.addAttribute("lockedResultCount", resultRepository.countByResultStatus(ResultStatus.LOCKED));
+        model.addAttribute("activeAccountCount", accountRepository.countByEnabled(true));
+        model.addAttribute("lockedAccountCount", accountRepository.countByEnabled(false));
+        model.addAttribute("recentResults", resultRepository.findTop5ByOrderByUpdatedAtDesc());
         return "admin/dashboard";
     }
 

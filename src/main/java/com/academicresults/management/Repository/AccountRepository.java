@@ -19,6 +19,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     long countByRole_RoleCodeAndEnabled(RoleCode roleCode, Boolean enabled);
 
+    long countByEnabled(Boolean enabled);
+
     @Query("""
             select a
             from Account a

@@ -53,21 +53,21 @@ public class StudentResult {
     @JoinColumn(name = "section_id", nullable = false)
     private CourseSection section;
 
-    @NotNull(message = "Attendance score is required.")
-    @DecimalMin(value = "0.0", message = "Attendance score must be between 0 and 10.")
-    @DecimalMax(value = "10.0", message = "Attendance score must be between 0 and 10.")
+    @NotNull(message = "Điểm chuyên cần không được để trống.")
+    @DecimalMin(value = "0.0", message = "Điểm chuyên cần phải nằm trong khoảng từ 0 đến 10.")
+    @DecimalMax(value = "10.0", message = "Điểm chuyên cần phải nằm trong khoảng từ 0 đến 10.")
     @Column(name = "attendance_score", precision = 4, scale = 2)
     private BigDecimal attendanceScore;
 
-    @NotNull(message = "Midterm score is required.")
-    @DecimalMin(value = "0.0", message = "Midterm score must be between 0 and 10.")
-    @DecimalMax(value = "10.0", message = "Midterm score must be between 0 and 10.")
+    @NotNull(message = "Điểm giữa kỳ không được để trống.")
+    @DecimalMin(value = "0.0", message = "Điểm giữa kỳ phải nằm trong khoảng từ 0 đến 10.")
+    @DecimalMax(value = "10.0", message = "Điểm giữa kỳ phải nằm trong khoảng từ 0 đến 10.")
     @Column(name = "midterm_score", precision = 4, scale = 2)
     private BigDecimal midtermScore;
 
-    @NotNull(message = "Final score is required.")
-    @DecimalMin(value = "0.0", message = "Final score must be between 0 and 10.")
-    @DecimalMax(value = "10.0", message = "Final score must be between 0 and 10.")
+    @NotNull(message = "Điểm cuối kỳ không được để trống.")
+    @DecimalMin(value = "0.0", message = "Điểm cuối kỳ phải nằm trong khoảng từ 0 đến 10.")
+    @DecimalMax(value = "10.0", message = "Điểm cuối kỳ phải nằm trong khoảng từ 0 đến 10.")
     @Column(name = "final_score", precision = 4, scale = 2)
     private BigDecimal finalScore;
 

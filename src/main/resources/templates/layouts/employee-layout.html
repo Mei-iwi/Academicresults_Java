@@ -1,74 +1,20 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <body>
-
   <div class="sidebar-body" th:fragment="sidebar(activeMenu)">
     <div class="sidebar-section">Nhân viên giáo vụ</div>
-
     <nav class="sidebar-nav">
-      <a href="/employee/departments" th:href="@{/employee/departments}"
-        th:classappend="${activeMenu == 'departments'} ? ' active' : ''">
-        <span class="icon">🏢</span>
-        <span>Khoa</span>
-      </a>
-
-      <a href="/employee/majors" th:href="@{/employee/majors}"
-        th:classappend="${activeMenu == 'majors'} ? ' active' : ''">
-        <span class="icon">🧭</span>
-        <span>Ngành</span>
-      </a>
-
-      <a href="/employee/classes" th:href="@{/employee/classes}"
-        th:classappend="${activeMenu == 'classes'} ? ' active' : ''">
-        <span class="icon">🏫</span>
-        <span>Lớp</span>
-      </a>
-
-      <a href="/employee/students" th:href="@{/employee/students}"
-        th:classappend="${activeMenu == 'students'} ? ' active' : ''">
-        <span class="icon">🎓</span>
-        <span>Sinh viên</span>
-      </a>
-
-      <a href="/employee/subjects" th:href="@{/employee/subjects}"
-        th:classappend="${activeMenu == 'subjects'} ? ' active' : ''">
-        <span class="icon">📚</span>
-        <span>Môn học</span>
-      </a>
-
-      <a href="/employee/academic-years" th:href="@{/employee/academic-years}"
-        th:classappend="${activeMenu == 'academic-years'} ? ' active' : ''">
-        <span class="icon">📅</span>
-        <span>Năm học</span>
-      </a>
-
-      <a href="/employee/semesters" th:href="@{/employee/semesters}"
-        th:classappend="${activeMenu == 'semesters'} ? ' active' : ''">
-        <span class="icon">🗓</span>
-        <span>Học kỳ</span>
-      </a>
-
-      <a href="/employee/course-sections" th:href="@{/employee/course-sections}"
-        th:classappend="${activeMenu == 'course-sections'} ? ' active' : ''">
-        <span class="icon">🧩</span>
-        <span>Lớp học phần</span>
-      </a>
-
-      <a href="/employee/results" th:href="@{/employee/results}"
-        th:classappend="${activeMenu == 'results'} ? ' active' : ''">
-        <span class="icon">📝</span>
-        <span>Nhập điểm</span>
-      </a>
-
-      <a href="/employee/reports" th:href="@{/employee/reports}"
-        th:classappend="${activeMenu == 'reports'} ? ' active' : ''">
-        <span class="icon">📊</span>
-        <span>Báo cáo</span>
-      </a>
+      <a th:href="@{/employee/departments}" th:classappend="${activeMenu == 'departments'} ? ' active' : ''"><span>Khoa</span></a>
+      <a th:href="@{/employee/majors}" th:classappend="${activeMenu == 'majors'} ? ' active' : ''"><span>Ngành</span></a>
+      <a th:href="@{/employee/classes}" th:classappend="${activeMenu == 'classes'} ? ' active' : ''"><span>Lớp</span></a>
+      <a th:href="@{/employee/students}" th:classappend="${activeMenu == 'students'} ? ' active' : ''"><span>Sinh viên</span></a>
+      <a th:href="@{/employee/subjects}" th:classappend="${activeMenu == 'subjects'} ? ' active' : ''"><span>Môn học</span></a>
+      <a th:href="@{/employee/academic-years}" th:classappend="${activeMenu == 'academic-years'} ? ' active' : ''"><span>Năm học</span></a>
+      <a th:href="@{/employee/semesters}" th:classappend="${activeMenu == 'semesters'} ? ' active' : ''"><span>Học kỳ</span></a>
+      <a th:href="@{/employee/course-sections}" th:classappend="${activeMenu == 'course-sections'} ? ' active' : ''"><span>Lớp học phần</span></a>
+      <a th:href="@{/employee/results}" th:classappend="${activeMenu == 'results'} ? ' active' : ''"><span>Kết quả học tập</span></a>
+      <a th:href="@{/employee/reports}" th:classappend="${activeMenu == 'reports'} ? ' active' : ''"><span>Báo cáo</span></a>
     </nav>
   </div>
-
 </body>
-
 </html>

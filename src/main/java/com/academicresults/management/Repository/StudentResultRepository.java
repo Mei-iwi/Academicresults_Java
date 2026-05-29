@@ -13,6 +13,8 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
 
     Optional<StudentResult> findByStudent_IdAndSection_Id(Long studentId, Long sectionId);
 
+    boolean existsByStudent_Id(Long studentId);
+
     @Query("""
             select r
             from StudentResult r
@@ -79,4 +81,29 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
             order by sem.semesterName
             """)
     List<Object[]> averageScoreBySemester();
+
+    @Query("""
+            select sub.subjectCode, sub.subjectName, coalesce(avg(r.totalScore), 0),
+                   sum(case when r.totalScore >= 4 then 1 else 0 end),
+                   sum(case when r.totalScore < 4 then 1 else 0 end),
+                   count(r)
+            from StudentResult r
+            join r.section sec
+            join sec.subject sub
+            group by sub.subjectCode, sub.subjectName
+            order by sub.subjectCode
+            """)
+    List<Object[]> reportBySubject();
+
+    @Query("""
+            select c.classCode, c.className, coalesce(avg(r.totalScore), 0), count(distinct s.id), count(r)
+            from StudentResult r
+            join r.student s
+            join s.studentClass c
+            group by c.classCode, c.className
+            order by c.classCode
+            """)
+    List<Object[]> reportByClass();
+
+    List<StudentResult> findTop5ByOrderByUpdatedAtDesc();
 }

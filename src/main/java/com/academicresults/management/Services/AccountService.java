@@ -55,6 +55,9 @@ public class AccountService {
         if (roleCode == null) {
             throw new IllegalArgumentException("Vui lòng chọn vai trò.");
         }
+        if (id == null && !StringUtils.hasText(rawPassword)) {
+            throw new IllegalArgumentException("Mật khẩu không được để trống khi tạo tài khoản.");
+        }
 
         Long checkedId = id == null ? -1L : id;
         if (accountRepository.existsByUsernameAndIdNot(username.trim(), checkedId)) {
@@ -72,11 +75,18 @@ public class AccountService {
         account.setStudent(null);
         account.setEmployee(null);
 
-        if (roleCode == RoleCode.STUDENT && studentId != null) {
+        if (roleCode == RoleCode.STUDENT && studentId == null) {
+            throw new IllegalArgumentException("Tài khoản sinh viên phải liên kết với một sinh viên.");
+        }
+        if (roleCode == RoleCode.EMPLOYEE && employeeId == null) {
+            throw new IllegalArgumentException("Tài khoản nhân viên phải liên kết với một nhân viên.");
+        }
+
+        if (roleCode == RoleCode.STUDENT) {
             account.setStudent(studentRepository.findById(studentId)
                     .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sinh viên liên kết.")));
         }
-        if (roleCode == RoleCode.EMPLOYEE && employeeId != null) {
+        if (roleCode == RoleCode.EMPLOYEE) {
             account.setEmployee(employeeRepository.findById(employeeId)
                     .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy nhân viên liên kết.")));
         }

@@ -1,106 +1,68 @@
 # Đề cương báo cáo
 
-## 1. Thông tin đồ án
+## 1. Giới thiệu đồ án
 
 - Tên đề tài: Hệ thống Web quản lý kết quả học tập
-- Tên tiếng Anh: Academic Results Management System
 - Môn học: Java Technology
 - Kiến trúc: Controller -> Service -> Repository -> Entity
 - Cơ sở dữ liệu: SQL Server
 
-## 2. Vấn đề cần giải quyết
+## 2. Vấn đề và phạm vi
 
-Nhân viên giáo vụ cần một hệ thống web để quản lý danh mục đào tạo, sinh viên, lớp học phần và kết quả học tập. Sinh viên cần một cổng tra cứu an toàn để chỉ xem điểm đã công bố và bảng điểm tổng hợp của chính mình.
+Nhân viên giáo vụ cần quản lý danh mục đào tạo, sinh viên, lớp học phần và kết quả học tập trên một hệ thống thống nhất. Sinh viên cần cổng tra cứu an toàn để chỉ xem kết quả đã công bố hoặc đã khóa của chính mình.
 
-## 3. Phạm vi
+Phạm vi gồm đăng nhập theo vai trò, quản lý tài khoản, CRUD học vụ, nhập và công bố điểm, khóa điểm, tổng quan sinh viên, bảng điểm, GPA và báo cáo. Đồ án không triển khai thương mại điện tử.
 
-- Đăng nhập theo vai trò ADMIN, EMPLOYEE, STUDENT.
-- Quản lý danh mục học vụ.
-- Quản lý sinh viên.
-- Nhập điểm, kiểm tra dữ liệu, tính điểm, công bố và khóa điểm.
-- Dashboard sinh viên, tra cứu kết quả và bảng điểm tổng hợp.
-- Không triển khai chức năng thương mại điện tử.
+## 3. Tác nhân và yêu cầu chức năng
 
-## 4. Công nghệ
+- Quản trị viên: xem tổng quan, quản lý tài khoản, khóa/mở tài khoản, đặt lại mật khẩu, truy cập các trang quản lý học vụ dùng chung.
+- Nhân viên giáo vụ: quản lý khoa, ngành, lớp, môn học, năm học, học kỳ, lớp học phần, sinh viên, kết quả và báo cáo.
+- Sinh viên: xem tổng quan, hồ sơ, kết quả đã công bố/đã khóa và bảng điểm cá nhân.
 
-- Spring Boot MVC
-- Thymeleaf
-- Bootstrap
-- Spring Security
-- Spring Data JPA
-- SQL Server
-- Bean Validation
-- Maven
+## 4. Yêu cầu phi chức năng
+
+- Giao diện tối giản, nghiêm túc, phù hợp hệ thống quản trị học vụ.
+- Tách logic nghiệp vụ vào service.
+- Bảo vệ CSRF, mã hóa BCrypt, phân quyền theo vai trò.
+- Kiểm thử tự động chạy bằng H2.
 
 ## 5. Thiết kế cơ sở dữ liệu
 
-Các bảng chính:
+Các bảng chính: `roles`, `accounts`, `employees`, `students`, `departments`, `majors`, `classes`, `academic_years`, `semesters`, `subjects`, `course_sections`, `student_results`.
 
-- `roles`
-- `accounts`
-- `employees`
-- `students`
-- `departments`
-- `majors`
-- `classes`
-- `academic_years`
-- `semesters`
-- `subjects`
-- `course_sections`
-- `student_results`
-
-Quan hệ chính:
-
-- Department có nhiều Major.
-- Major có nhiều StudentClass.
-- AcademicYear có nhiều Semester và StudentClass.
-- CourseSection thuộc Subject, Semester, có thể gắn với StudentClass và Employee.
-- Student thuộc StudentClass.
-- StudentResult thuộc một Student và một CourseSection.
-- Account gắn với Role và có thể gắn với Student hoặc Employee.
+Quan hệ chính: khoa có nhiều ngành; ngành có nhiều lớp; năm học có nhiều học kỳ và lớp; lớp học phần thuộc môn học, học kỳ và có thể gắn lớp/nhân viên; sinh viên thuộc lớp; kết quả học tập thuộc sinh viên và lớp học phần; tài khoản gắn vai trò và có thể liên kết sinh viên hoặc nhân viên.
 
 ## 6. Quy tắc nghiệp vụ
 
-- Điểm phải nằm trong khoảng 0 đến 10.
+- Điểm thành phần nằm trong khoảng 0 đến 10.
 - `totalScore = attendanceScore * 0.1 + midtermScore * 0.3 + finalScore * 0.6`.
 - A >= 8.5, B >= 7.0, C >= 5.5, D >= 4.0, F < 4.0.
-- Grade point: A=4, B=3, C=2, D=1, F=0.
-- PASS khi `totalScore >= 4.0`.
-- Sinh viên chỉ được xem kết quả `PUBLISHED` hoặc `LOCKED` của chính mình.
-- Kết quả `LOCKED` không được sửa hoặc xóa nhầm.
+- Đạt khi `totalScore >= 4.0`.
+- Không tạo trùng kết quả cho cùng sinh viên và lớp học phần.
+- Kết quả đã khóa không được sửa hoặc xóa.
+- Sinh viên chỉ xem dữ liệu của chính mình.
 
 ## 7. Bảo mật
 
-- ADMIN truy cập `/admin/**`.
-- EMPLOYEE truy cập `/employee/**`.
-- STUDENT truy cập `/student/**`.
-- Người dùng chưa đăng nhập chỉ truy cập `/`, `/login` và static resources.
-- Truy cập sai quyền hiển thị trang 403 thân thiện.
+- Public: `/`, `/login`, `/403`, static resources.
+- Quản trị viên: `/admin/**` và các trang học vụ `/employee/**`.
+- Nhân viên giáo vụ: `/employee/**`.
+- Sinh viên: `/student/**`.
+- Người dùng chưa đăng nhập bị chuyển về trang đăng nhập; sai quyền hiển thị 403.
 
-## 8. Các màn hình chính
+## 8. Màn hình chính
 
-- Login
-- Admin dashboard
-- Quản lý tài khoản
-- Các trang CRUD danh mục cho Employee
-- Quản lý kết quả học tập
-- Báo cáo thống kê
-- Student dashboard
-- Student profile
-- Student results
-- Student transcript
+Đăng nhập, tổng quan quản trị, quản lý tài khoản, quản lý danh mục học vụ, quản lý sinh viên, lớp học phần, kết quả học tập, báo cáo, tổng quan sinh viên, hồ sơ sinh viên, tra cứu kết quả và bảng điểm.
 
 ## 9. Kịch bản kiểm thử
 
-- Build pass với `mvn clean test`.
-- Đăng nhập được với các vai trò.
-- Chặn truy cập sai vai trò.
-- CRUD một danh mục hoạt động.
-- Công thức tính điểm đúng.
-- Sinh viên không xem được dữ liệu của sinh viên khác.
+- `mvn clean test` chạy thành công.
+- Kiểm tra phân quyền theo vai trò.
+- Kiểm tra công thức tính điểm và xếp loại.
+- Kiểm tra không sửa/xóa điểm đã khóa.
+- Kiểm tra sinh viên không xem dữ liệu sinh viên khác.
+- Kiểm tra không khóa quản trị viên hoạt động cuối cùng.
 
-## 10. Hạn chế và hướng phát triển
+## 10. Kết quả, hạn chế và hướng phát triển
 
-- Một số trang CRUD có thể cải thiện thêm trải nghiệm chỉnh sửa inline.
-- Có thể bổ sung thêm integration test tự động cho các luồng đăng nhập/CRUD.
-- Khi triển khai thật cần thay tài khoản demo và đưa cấu hình nhạy cảm ra biến môi trường.
+Đồ án hoàn thiện hệ thống MVC quản lý kết quả học tập có dữ liệu mẫu, tài liệu, kiểm thử và giao diện quản trị nghiêm túc. Hướng phát triển: xuất Excel/PDF, biểu đồ nâng cao, nhật ký thao tác chi tiết và phân quyền mịn hơn theo phòng ban.

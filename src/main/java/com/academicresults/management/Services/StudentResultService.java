@@ -47,18 +47,30 @@ public class StudentResultService {
         validateScore(midtermScore, "midtermScore");
         validateScore(finalScore, "finalScore");
 
-        StudentResult result = id == null
-                ? resultRepository.findByStudent_IdAndSection_Id(studentId, sectionId).orElseGet(StudentResult::new)
-                : resultRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Result not found: " + id));
+        StudentResult result;
+        if (id == null) {
+            if (resultRepository.findByStudent_IdAndSection_Id(studentId, sectionId).isPresent()) {
+                throw new IllegalArgumentException("Sinh viên đã có kết quả cho lớp học phần này.");
+            }
+            result = new StudentResult();
+        } else {
+            result = resultRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kết quả học tập."));
+            resultRepository.findByStudent_IdAndSection_Id(studentId, sectionId)
+                    .filter(existing -> !existing.getId().equals(id))
+                    .ifPresent(existing -> {
+                        throw new IllegalArgumentException("Sinh viên đã có kết quả cho lớp học phần này.");
+                    });
+        }
 
         if (result.getId() != null && result.getResultStatus() == ResultStatus.LOCKED) {
             throw new IllegalArgumentException("Kết quả đã khóa, không thể chỉnh sửa.");
         }
 
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentId));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sinh viên."));
         CourseSection section = courseSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new IllegalArgumentException("Course section not found: " + sectionId));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lớp học phần."));
 
         result.setStudent(student);
         result.setSection(section);
@@ -88,7 +100,7 @@ public class StudentResultService {
 
     public void updateStatus(Long id, ResultStatus status) {
         StudentResult result = resultRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Result not found: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kết quả học tập."));
         if (result.getResultStatus() == ResultStatus.LOCKED && status != ResultStatus.LOCKED) {
             throw new IllegalArgumentException("Kết quả đã khóa, không thể chuyển về trạng thái khác.");
         }
@@ -160,7 +172,7 @@ public class StudentResultService {
 
     private void validateScore(BigDecimal score, String field) {
         if (score == null || score.compareTo(MIN_SCORE) < 0 || score.compareTo(MAX_SCORE) > 0) {
-            throw new IllegalArgumentException(field + " phải nằm trong khoảng 0 đến 10.");
+            throw new IllegalArgumentException(field + " phải nằm trong khoảng từ 0 đến 10.");
         }
     }
 }

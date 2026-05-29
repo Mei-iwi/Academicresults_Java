@@ -36,23 +36,23 @@ public class StudentClass {
     @Column(name = "class_id")
     private Long id;
 
-    @NotBlank(message = "Class code is required.")
-    @Size(max = 30, message = "Class code must be at most 30 characters.")
+    @NotBlank(message = "Mã lớp không được để trống.")
+    @Size(max = 30, message = "Mã lớp tối đa 30 ký tự.")
     @Column(name = "class_code", nullable = false, unique = true, length = 30)
     private String classCode;
 
-    @NotBlank(message = "Class name is required.")
-    @Size(max = 150, message = "Class name must be at most 150 characters.")
+    @NotBlank(message = "Tên lớp không được để trống.")
+    @Size(max = 150, message = "Tên lớp tối đa 150 ký tự.")
     @Nationalized
     @Column(name = "class_name", nullable = false, length = 150)
     private String className;
 
-    @NotNull(message = "Major is required.")
+    @NotNull(message = "Ngành không được để trống.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
 
-    @NotNull(message = "Academic year is required.")
+    @NotNull(message = "Năm học không được để trống.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "academic_year_id", nullable = false)
     private AcademicYear academicYear;

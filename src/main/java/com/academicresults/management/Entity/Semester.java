@@ -34,18 +34,18 @@ public class Semester {
     @Column(name = "semester_id")
     private Integer id;
 
-    @NotBlank(message = "Semester code is required.")
-    @Size(max = 20, message = "Semester code must be at most 20 characters.")
+    @NotBlank(message = "Mã học kỳ không được để trống.")
+    @Size(max = 20, message = "Mã học kỳ tối đa 20 ký tự.")
     @Column(name = "semester_code", nullable = false, unique = true, length = 20)
     private String semesterCode;
 
-    @NotBlank(message = "Semester name is required.")
-    @Size(max = 100, message = "Semester name must be at most 100 characters.")
+    @NotBlank(message = "Tên học kỳ không được để trống.")
+    @Size(max = 100, message = "Tên học kỳ tối đa 100 ký tự.")
     @Nationalized
     @Column(name = "semester_name", nullable = false, length = 100)
     private String semesterName;
 
-    @NotNull(message = "Academic year is required.")
+    @NotNull(message = "Năm học không được để trống.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "academic_year_id", nullable = false)
     private AcademicYear academicYear;

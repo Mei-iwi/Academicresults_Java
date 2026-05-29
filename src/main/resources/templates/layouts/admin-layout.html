@@ -1,52 +1,16 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <body>
-
   <div class="sidebar-body" th:fragment="sidebar(activeMenu)">
-    <div class="sidebar-section">Menu Quản trị viên</div>
-
+    <div class="sidebar-section">Quản trị viên</div>
     <nav class="sidebar-nav">
-
-      <a href="/admin/dashboard" th:href="@{/admin/dashboard}"
-        th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
-        <span class="icon">🏠</span>
-        <span>Tổng quan</span>
-      </a>
-
-      <a href="/admin/accounts" th:href="@{/admin/accounts}"
-        th:classappend="${activeMenu == 'accounts'} ? ' active' : ''">
-        <span class="icon">👤</span>
-        <span>Tài khoản</span>
-      </a>
-
-      <a href="/employee/students" th:href="@{/employee/students}"
-        th:classappend="${activeMenu == 'students'} ? ' active' : ''">
-        <span class="icon">🎓</span>
-        <span>Sinh viên</span>
-      </a>
-
-      <a href="/employee/subjects" th:href="@{/employee/subjects}"
-        th:classappend="${activeMenu == 'subjects'} ? ' active' : ''">
-        <span class="icon">📚</span>
-        <span>Môn học</span>
-      </a>
-
-      <a href="/employee/results" th:href="@{/employee/results}"
-        th:classappend="${activeMenu == 'results'} ? ' active' : ''">
-        <span class="icon">📝</span>
-        <span>Điểm học tập</span>
-      </a>
-
-      <a href="/employee/reports" th:href="@{/employee/reports}"
-        th:classappend="${activeMenu == 'reports'} ? ' active' : ''">
-        <span class="icon">📊</span>
-        <span>Báo cáo</span>
-      </a>
-
+      <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''"><span>Tổng quan</span></a>
+      <a th:href="@{/admin/accounts}" th:classappend="${activeMenu == 'accounts'} ? ' active' : ''"><span>Tài khoản</span></a>
+      <a th:href="@{/employee/students}" th:classappend="${activeMenu == 'students'} ? ' active' : ''"><span>Sinh viên</span></a>
+      <a th:href="@{/employee/subjects}" th:classappend="${activeMenu == 'subjects'} ? ' active' : ''"><span>Môn học</span></a>
+      <a th:href="@{/employee/results}" th:classappend="${activeMenu == 'results'} ? ' active' : ''"><span>Kết quả học tập</span></a>
+      <a th:href="@{/employee/reports}" th:classappend="${activeMenu == 'reports'} ? ' active' : ''"><span>Báo cáo</span></a>
     </nav>
   </div>
-
 </body>
-
 </html>
