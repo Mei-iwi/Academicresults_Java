@@ -31,19 +31,19 @@ public class Subject {
     @Column(name = "subject_id")
     private Long id;
 
-    @NotBlank(message = "Subject code is required.")
-    @Size(max = 20, message = "Subject code must be at most 20 characters.")
+    @NotBlank(message = "Mã môn học không được để trống.")
+    @Size(max = 20, message = "Mã môn học tối đa 20 ký tự.")
     @Column(name = "subject_code", nullable = false, unique = true, length = 20)
     private String subjectCode;
 
-    @NotBlank(message = "Subject name is required.")
-    @Size(max = 200, message = "Subject name must be at most 200 characters.")
+    @NotBlank(message = "Tên môn học không được để trống.")
+    @Size(max = 200, message = "Tên môn học tối đa 200 ký tự.")
     @Nationalized
     @Column(name = "subject_name", nullable = false, length = 200)
     private String subjectName;
 
-    @NotNull(message = "Credits are required.")
-    @Min(value = 0, message = "Credits must be non-negative.")
+    @NotNull(message = "Số tín chỉ không được để trống.")
+    @Min(value = 1, message = "Số tín chỉ phải lớn hơn 0.")
     @Column(name = "credits", nullable = false)
     private Byte credits;
 

@@ -37,17 +37,17 @@ public class CourseSection {
     @Column(name = "section_id")
     private Long id;
 
-    @NotBlank(message = "Section code is required.")
-    @Size(max = 30, message = "Section code must be at most 30 characters.")
+    @NotBlank(message = "Mã lớp học phần không được để trống.")
+    @Size(max = 30, message = "Mã lớp học phần tối đa 30 ký tự.")
     @Column(name = "section_code", nullable = false, unique = true, length = 30)
     private String sectionCode;
 
-    @NotNull(message = "Subject is required.")
+    @NotNull(message = "Môn học không được để trống.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
-    @NotNull(message = "Semester is required.")
+    @NotNull(message = "Học kỳ không được để trống.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
@@ -60,7 +60,7 @@ public class CourseSection {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @Min(value = 0, message = "Max students must be non-negative.")
+    @Min(value = 0, message = "Sĩ số tối đa không được âm.")
     @Column(name = "max_students")
     private Integer maxStudents;
 

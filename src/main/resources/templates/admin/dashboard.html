@@ -1,76 +1,176 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="route" content="/admin/dashboard">
-  <title>Bảng điều khiển quản trị | Quản lý kết quả học tập</title>
+  <title>Tổng quan quản trị | Quản lý kết quả học tập</title>
   <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
   <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+<style>
+  .topbar,
+  .topbar * {
+    color: white;
+  }
+
+  .topbar a {
+    color: white;
+    text-decoration: none;
+  }
+</style>
 
 <body data-role="admin">
-<div class="app-shell">
-  <div class="sidebar-overlay"></div>
-  <aside class="sidebar sidebar-admin" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-mark">KQ</div>
-      <div><div class="sidebar-title">Quản lý kết quả</div><div class="sidebar-subtitle">Quản trị viên</div></div>
-    </div>
-    <div class="sidebar-body" th:replace="~{layouts/admin-layout :: sidebar('dashboard')}"></div>
-    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
-  </aside>
-  <main class="main">
-    <header class="topbar">
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-admin">
+      <div class="sidebar-brand">
+        <div class="brand-mark"><img style="width: 50px;height: 50px;border-radius: 100%;" th:src="@{/images/logo.jpg}"
+            alt="not found"></div>
         <div>
-          <h1 class="page-title">Bảng điều khiển quản trị</h1>
-          <div class="page-subtitle">Tổng quan dữ liệu chính của hệ thống quản lý kết quả học tập.</div>
+          <div class="sidebar-title">Quản lý kết quả học tập</div>
+          <div class="sidebar-subtitle">Quản trị viên</div>
         </div>
       </div>
-      <div class="d-flex align-items-center gap-2 ms-auto text-end" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-    </header>
-    <section class="content">
-      <div class="row g-3 mb-4">
-        <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Tài khoản</div><div class="metric-value" th:text="${accountCount}">0</div></div></div></div>
-        <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Sinh viên</div><div class="metric-value" th:text="${studentCount}">0</div></div></div></div>
-        <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Môn học</div><div class="metric-value" th:text="${subjectCount}">0</div></div></div></div>
-        <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Kết quả</div><div class="metric-value" th:text="${resultCount}">0</div></div></div></div>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-lg-8">
-          <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <strong>Quản trị nhanh</strong>
-              <a class="btn btn-sm btn-primary" th:href="@{/admin/accounts}">Quản lý tài khoản</a>
+      <div th:replace="~{layouts/admin-layout :: sidebar('dashboard')}"></div>
+      <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+    </aside>
+    <main class="main">
+      <header class="topbar d-flex justify-content-between align-items-center bg-primary">
+        <button class="btn btn-light mobile-toggle" data-toggle-sidebar>Danh mục</button>
+        <div>
+          <h1 class="page-title">Tổng quan quản trị</h1>
+          <div class="page-subtitle">Theo dõi dữ liệu chính của hệ thống quản lý kết quả học tập.</div>
+        </div>
+        <div class="ms-auto text-end"
+          th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+      </header>
+      <section class="content">
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Tài khoản</div>
+                <div class="metric-value" th:text="${accountCount}">0</div>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-4"><div class="border rounded p-3"><div class="text-muted">Khoa</div><div class="metric-value" th:text="${departmentCount}">0</div></div></div>
-                <div class="col-md-4"><div class="border rounded p-3"><div class="text-muted">Lớp học phần</div><div class="metric-value" th:text="${courseSectionCount}">0</div></div></div>
-                <div class="col-md-4"><div class="border rounded p-3"><div class="text-muted">Tổng kết quả</div><div class="metric-value" th:text="${resultCount}">0</div></div></div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Sinh viên</div>
+                <div class="metric-value" th:text="${studentCount}">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Khoa</div>
+                <div class="metric-value" th:text="${departmentCount}">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Môn học</div>
+                <div class="metric-value" th:text="${subjectCount}">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Lớp học phần</div>
+                <div class="metric-value" th:text="${courseSectionCount}">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Kết quả học tập</div>
+                <div class="metric-value" th:text="${resultCount}">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Tài khoản hoạt động</div>
+                <div class="metric-value" th:text="${activeAccountCount}">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card metric-card">
+              <div class="card-body">
+                <div class="metric-label">Tài khoản đã khóa</div>
+                <div class="metric-value" th:text="${lockedAccountCount}">0</div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-header"><strong>Liên kết chức năng</strong></div>
-            <div class="card-body d-grid gap-2">
-              <a class="btn btn-light text-start" th:href="@{/admin/accounts}">Tài khoản và phân quyền</a>
-              <a class="btn btn-light text-start" th:href="@{/employee/reports}">Báo cáo thống kê</a>
-              <a class="btn btn-light text-start" th:href="@{/employee/results}">Kết quả học tập</a>
+        <div class="row g-3">
+          <div class="col-lg-5">
+            <div class="card">
+              <div class="card-header"><strong>Trạng thái kết quả</strong></div>
+              <div class="card-body table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td>Nháp</td>
+                      <td th:text="${draftResultCount}">0</td>
+                    </tr>
+                    <tr>
+                      <td>Đã công bố</td>
+                      <td th:text="${publishedResultCount}">0</td>
+                    </tr>
+                    <tr>
+                      <td>Đã khóa</td>
+                      <td th:text="${lockedResultCount}">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="card">
+              <div class="card-header"><strong>Kết quả cập nhật gần đây</strong></div>
+              <div class="card-body table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Sinh viên</th>
+                      <th>Lớp học phần</th>
+                      <th>Điểm tổng kết</th>
+                      <th>Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="r : ${recentResults}">
+                      <td th:text="${r.student != null ? r.student.studentCode : ''}"></td>
+                      <td th:text="${r.section != null ? r.section.sectionCode : ''}"></td>
+                      <td th:text="${r.totalScore}"></td>
+                      <td
+                        th:text="${r.resultStatus == T(com.academicresults.management.Entity.enums.ResultStatus).DRAFT ? 'Nháp' : (r.resultStatus == T(com.academicresults.management.Entity.enums.ResultStatus).PUBLISHED ? 'Đã công bố' : 'Đã khóa')}">
+                      </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(recentResults)}">
+                      <td colspan="4" class="text-center text-muted">Chưa có kết quả được cập nhật.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
-</div>
-<script th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-<script th:src="@{/js/app.js}"></script>
+      </section>
+    </main>
+  </div>
+  <script th:src="@{/js/app.js}"></script>
 </body>
+
 </html>

@@ -54,11 +54,42 @@ public class ReportService {
                 .toList();
     }
 
+    public List<SubjectReport> reportBySubject() {
+        return resultRepository.reportBySubject().stream()
+                .map(row -> new SubjectReport(
+                        String.valueOf(row[0]),
+                        String.valueOf(row[1]),
+                        BigDecimal.valueOf(((Number) row[2]).doubleValue()).setScale(2, RoundingMode.HALF_UP),
+                        ((Number) row[3]).longValue(),
+                        ((Number) row[4]).longValue(),
+                        ((Number) row[5]).longValue()))
+                .toList();
+    }
+
+    public List<ClassReport> reportByClass() {
+        return resultRepository.reportByClass().stream()
+                .map(row -> new ClassReport(
+                        String.valueOf(row[0]),
+                        String.valueOf(row[1]),
+                        BigDecimal.valueOf(((Number) row[2]).doubleValue()).setScale(2, RoundingMode.HALF_UP),
+                        ((Number) row[3]).longValue(),
+                        ((Number) row[4]).longValue()))
+                .toList();
+    }
+
     public record Summary(long totalStudents, long totalSubjects, long totalCourseSections, long totalResults,
                           long passCount, long failCount, BigDecimal passRate, BigDecimal averageScore,
                           long draftCount, long publishedCount, long lockedCount) {
     }
 
     public record SemesterAverage(String semesterName, BigDecimal averageScore, long resultCount) {
+    }
+
+    public record SubjectReport(String subjectCode, String subjectName, BigDecimal averageScore,
+                                long passCount, long failCount, long resultCount) {
+    }
+
+    public record ClassReport(String classCode, String className, BigDecimal averageScore,
+                              long studentCount, long resultCount) {
     }
 }

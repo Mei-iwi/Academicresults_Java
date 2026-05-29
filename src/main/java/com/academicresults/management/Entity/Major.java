@@ -33,18 +33,18 @@ public class Major {
     @Column(name = "major_id")
     private Integer id;
 
-    @NotBlank(message = "Major code is required.")
-    @Size(max = 20, message = "Major code must be at most 20 characters.")
+    @NotBlank(message = "Mã ngành không được để trống.")
+    @Size(max = 20, message = "Mã ngành tối đa 20 ký tự.")
     @Column(name = "major_code", nullable = false, unique = true, length = 20)
     private String majorCode;
 
-    @NotBlank(message = "Major name is required.")
-    @Size(max = 150, message = "Major name must be at most 150 characters.")
+    @NotBlank(message = "Tên ngành không được để trống.")
+    @Size(max = 150, message = "Tên ngành tối đa 150 ký tự.")
     @Nationalized
     @Column(name = "major_name", nullable = false, length = 150)
     private String majorName;
 
-    @NotNull(message = "Department is required.")
+    @NotNull(message = "Khoa không được để trống.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;

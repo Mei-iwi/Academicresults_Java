@@ -33,7 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/employee")
 @RequiredArgsConstructor
-public class employeesController {
+public class EmployeesController {
 
     private final AcademicCatalogService catalogService;
     private final StudentServices studentServices;
@@ -202,7 +202,7 @@ public class employeesController {
             Model model) {
         model.addAttribute("results",
                 resultService.search(keyword, studentId, sectionId, semesterId, subjectId, status));
-        model.addAttribute("students", studentServices.searchStudents(keyword, null, null));
+        model.addAttribute("students", studentServices.searchStudents(null, null, null));
         model.addAttribute("courseSections", catalogService.courseSections(null, null, null));
         model.addAttribute("semesters", catalogService.semesters(null));
         model.addAttribute("subjects", catalogService.subjects(null));
@@ -265,6 +265,8 @@ public class employeesController {
     public String reports(Model model) {
         model.addAttribute("summary", reportService.summary());
         model.addAttribute("semesterAverages", reportService.averageBySemester());
+        model.addAttribute("subjectReports", reportService.reportBySubject());
+        model.addAttribute("classReports", reportService.reportByClass());
         return "employee/reports";
     }
 

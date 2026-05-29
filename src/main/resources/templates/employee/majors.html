@@ -1,94 +1,123 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="route" content="/employee/majors">
-  <title>Quản lý ngành | Quản lý kết quả học tập</title>
-  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
-  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+  <title>Ngành | Quản lý kết quả học tập</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+<style>
+  .topbar,
+  .topbar * {
+    color: white;
+  }
+
+  .topbar a {
+    color: white;
+    text-decoration: none;
+  }
+</style>
 
 <body data-role="employee">
   <div class="app-shell">
-
     <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-employee" id="sidebar">
+    <aside class="sidebar sidebar-employee">
       <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
+        <div class="brand-mark"><img style="width: 50px;height: 50px;border-radius: 100%;" th:src="@{/images/logo.jpg}"
+            alt="not found"></div>
         <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-title">Quản lý kết quả học tập</div>
           <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
         </div>
       </div>
-      <div class="sidebar-body">
-        <div th:replace="~{/layouts/employee-layout :: sidebar('majors')}"></div>
-      </div>
-      <div class="sidebar-footer">
-        <div th:replace="~{layouts/User :: logout}"></div>
-
-      </div>
+      <div th:replace="~{layouts/employee-layout :: sidebar('majors')}"></div>
+      <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
     </aside>
     <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-          <div>
-            <h1 class="page-title">Quản lý ngành</h1>
-            <div class="page-subtitle">CRUD danh mục ngành phục vụ tổ chức đào tạo.</div>
-          </div>
+      <header class="topbar d-flex justify-content-between align-items-center bg-primary">
+        <button class="btn btn-light mobile-toggle" data-toggle-sidebar>Danh mục</button>
+        <div>
+          <h1 class="page-title">Ngành</h1>
+          <div class="page-subtitle">Quản lý ngành đào tạo theo từng khoa.</div>
         </div>
-        <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-
+        <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}">
         </div>
       </header>
       <section class="content">
-        <div class="row">
-          <div class="col-lg-4 mb-4">
-            <div class="card">
-              <div class="card-header"><strong>Form ngành</strong></div>
-              <div class="card-body">
-                <div class="mb-3"><label class="form-label required">Mã ngành</label><input class="form-control"
-                    value="HTTT"></div>
-                <div class="mb-3"><label class="form-label required">Tên ngành</label><input class="form-control"
-                    value="Hệ thống thông tin"></div>
-                <div class="mb-3"><label class="form-label">Ghi chú</label><textarea class="form-control" rows="3"
-                    placeholder="Ghi chú ngắn nếu cần"></textarea></div><button class="btn btn-primary"
-                  data-action="save">Lưu ngành</button><button class="btn btn-light">Làm mới</button>
-              </div>
-            </div>
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+        <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+        <div class="row g-3">
+          <div class="col-lg-4">
+            <form class="card card-body" method="post" th:action="@{/employee/majors}" th:object="${major}">
+              <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+              <h2 class="h6 mb-3">Thêm ngành</h2>
+              <label class="form-label required">Mã ngành</label>
+              <input class="form-control mb-3" th:field="*{majorCode}" required maxlength="20">
+              <label class="form-label required">Tên ngành</label>
+              <input class="form-control mb-3" th:field="*{majorName}" required maxlength="150">
+              <label class="form-label required">Khoa</label>
+              <select class="form-select mb-3" th:field="*{department.id}" required>
+                <option value="">Chọn khoa</option>
+                <option th:each="d : ${departments}" th:value="${d.id}"
+                  th:text="${d.departmentCode + ' - ' + d.departmentName}"></option>
+              </select>
+              <button class="btn btn-primary">Lưu ngành</button>
+            </form>
           </div>
-          <div class="col-lg-8 mb-4">
-            <div class="card">
-              <div class="card-header d-flex justify-content-between"><strong>Danh sách ngành</strong><input
-                  class="form-control" style="max-width:260px" data-table-search="#crudTable" placeholder="Tìm kiếm">
+          <div class="col-lg-8">
+            <form method="get" th:action="@{/employee/majors}" class="card card-body mb-3">
+              <div class="row g-2">
+                <div class="col"><input class="form-control" name="keyword" placeholder="Tìm theo mã hoặc tên ngành"
+                    th:value="${param.keyword}"></div>
+                <div class="col-auto"><button class="btn btn-primary">Tìm kiếm</button></div>
               </div>
+            </form>
+            <div class="card">
+              <div class="card-header"><strong>Danh sách ngành</strong></div>
               <div class="card-body table-responsive">
-                <table id="crudTable" class="table table-hover">
+                <table class="table table-hover align-middle">
                   <thead>
                     <tr>
-                      <th>Mã ngành</th>
+                      <th>Mã</th>
                       <th>Tên ngành</th>
-                      <th>Trạng thái</th>
-                      <th>Thao tác</th>
+                      <th>Khoa</th>
+                      <th class="text-end">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>HTTT</td>
-                      <td>Hệ thống thông tin</td>
-                      <td><span class="badge bg-success">Đang sử dụng</span></td>
-                      <td class="action-group"><button class="btn btn-sm btn-outline-primary">Sửa</button><button
-                          class="btn btn-sm btn-danger" data-action="delete">Xóa</button></td>
+                    <tr th:each="m : ${majors}">
+                      <td colspan="3">
+                        <form class="row g-2 align-items-center" method="post" th:action="@{/employee/majors}">
+                          <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}">
+                          <input type="hidden" name="id" th:value="${m.id}">
+                          <div class="col-md-2"><input class="form-control form-control-sm" name="majorCode"
+                              th:value="${m.majorCode}" required></div>
+                          <div class="col-md-3"><input class="form-control form-control-sm" name="majorName"
+                              th:value="${m.majorName}" required></div>
+                          <div class="col-md-3"><select class="form-select form-select-sm" name="department.id"
+                              required>
+                              <option th:each="d : ${departments}" th:value="${d.id}"
+                                th:selected="${m.department != null and m.department.id == d.id}"
+                                th:text="${d.departmentCode}">
+                              </option>
+                            </select>
+                          </div>
+                      </td>
+                      <td>
+                        <div class="col-md-4 text-end d-flex">
+                          <button style="margin-right: 10px;" class="btn btn-sm btn-outline-primary">Cập nhật</button>
+                          <button class="btn btn-sm btn-danger"
+                            th:formaction="@{/employee/majors/delete/{id}(id=${m.id})}"
+                            onclick="return confirm('Xóa ngành này?')">Xóa</button>
+                        </div>
+                        </form>
+                      </td>
                     </tr>
-                    <tr>
-                      <td>HTTT02</td>
-                      <td>Hệ thống thông tin 02</td>
-                      <td><span class="badge bg-secondary">Tạm ngưng</span></td>
-                      <td class="action-group"><button class="btn btn-sm btn-outline-primary">Sửa</button><button
-                          class="btn btn-sm btn-success" data-action="save">Bật lại</button></td>
+                    <tr th:if="${#lists.isEmpty(majors)}">
+                      <td colspan="4" class="text-center text-muted py-4">Chưa có ngành phù hợp.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -99,8 +128,7 @@
       </section>
     </main>
   </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+  <script th:src="@{/js/app.js}"></script>
 </body>
 
 </html>

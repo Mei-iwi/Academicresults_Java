@@ -29,8 +29,8 @@ public class AcademicYear {
     @Column(name = "academic_year_id")
     private Integer id;
 
-    @NotBlank(message = "Academic year name is required.")
-    @Size(max = 20, message = "Academic year name must be at most 20 characters.")
+    @NotBlank(message = "Tên năm học không được để trống.")
+    @Size(max = 20, message = "Tên năm học tối đa 20 ký tự.")
     @Column(name = "year_name", nullable = false, unique = true, length = 20)
     private String yearName;
 

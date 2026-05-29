@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -9,84 +9,196 @@
   <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
   <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+<style>
+  .topbar,
+  .topbar * {
+    color: white;
+  }
+
+  .topbar a {
+    color: white;
+    text-decoration: none;
+  }
+</style>
 
 <body data-role="employee">
-<div class="app-shell">
-  <div class="sidebar-overlay"></div>
-  <aside class="sidebar sidebar-employee" id="sidebar">
-    <div class="sidebar-brand"><div class="brand-mark">KQ</div><div><div class="sidebar-title">Quản lý kết quả</div><div class="sidebar-subtitle">Nhân viên giáo vụ</div></div></div>
-    <div class="sidebar-body" th:replace="~{/layouts/employee-layout :: sidebar('course-sections')}"></div>
-    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
-  </aside>
-  <main class="main">
-    <header class="topbar">
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-        <div><h1 class="page-title">Quản lý lớp học phần</h1><div class="page-subtitle">Mở lớp học phần, gán môn học, học kỳ và lớp sinh viên.</div></div>
-      </div>
-      <div class="d-flex align-items-center gap-2 ms-auto text-end" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-    </header>
-    <section class="content">
-      <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
-      <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
-
-      <form method="get" th:action="@{/employee/course-sections}" class="card card-body mb-3">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-4"><label class="form-label">Từ khóa</label><input class="form-control" name="keyword" placeholder="Mã lớp học phần hoặc môn học"></div>
-          <div class="col-md-3"><label class="form-label">Học kỳ</label><select class="form-select" name="semesterId"><option value="">Tất cả học kỳ</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option></select></div>
-          <div class="col-md-3"><label class="form-label">Môn học</label><select class="form-select" name="subjectId"><option value="">Tất cả môn học</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option></select></div>
-          <div class="col-md-2"><button class="btn btn-primary w-100">Lọc</button></div>
-        </div>
-      </form>
-
-      <div class="card mb-3">
-        <div class="card-header"><strong>Mở lớp học phần</strong></div>
-        <div class="card-body">
-          <form class="row g-3" method="post" th:action="@{/employee/course-sections}" th:object="${courseSection}">
-            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <div class="col-md-3"><label class="form-label required">Mã lớp học phần</label><input class="form-control" th:field="*{sectionCode}" required></div>
-            <div class="col-md-3"><label class="form-label required">Môn học</label><select class="form-select" th:field="*{subject.id}" required><option value="">Chọn môn</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option></select></div>
-            <div class="col-md-2"><label class="form-label required">Học kỳ</label><select class="form-select" th:field="*{semester.id}" required><option value="">Chọn học kỳ</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option></select></div>
-            <div class="col-md-2"><label class="form-label">Lớp</label><select class="form-select" th:field="*{studentClass.id}"><option value="">Không gán</option><option th:each="c:${classes}" th:value="${c.id}" th:text="${c.classCode}"></option></select></div>
-            <div class="col-md-1"><label class="form-label">Sĩ số</label><input class="form-control" type="number" min="0" th:field="*{maxStudents}"></div>
-            <div class="col-md-1"><label class="form-label">Trạng thái</label><select class="form-select" th:field="*{status}"><option th:each="s:${statuses}" th:value="${s}" th:text="${s.name() == 'OPEN' ? 'Mở' : 'Đóng'}"></option></select></div>
-            <div class="col-12"><button class="btn btn-primary">Lưu lớp học phần</button></div>
-          </form>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <aside class="sidebar sidebar-employee" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark"><img style="width: 50px;height: 50px;border-radius: 100%;" th:src="@{/images/logo.jpg}"
+            alt="not found"></div>
+        <div>
+          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
         </div>
       </div>
+      <div class="sidebar-body" th:replace="~{/layouts/employee-layout :: sidebar('course-sections')}"></div>
+      <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+    </aside>
+    <main class="main">
+      <header class="topbar d-flex justify-content-between align-items-center bg-primary">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+          <div>
+            <h1 class="page-title">Quản lý lớp học phần</h1>
+            <div class="page-subtitle">Mở lớp học phần, gán môn học, học kỳ và lớp sinh viên.</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 ms-auto text-end"
+          th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+      </header>
+      <section class="content">
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+        <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
-      <div class="card">
-        <div class="card-header"><strong>Danh sách lớp học phần</strong></div>
-        <div class="card-body table-responsive">
-          <table class="table table-hover align-middle">
-            <thead><tr><th>Mã LHP</th><th>Môn học</th><th>Học kỳ</th><th>Lớp</th><th>Sĩ số tối đa</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-            <tbody>
-            <tr th:each="section:${courseSections}">
-              <td th:text="${section.sectionCode}">LHP</td>
-              <td th:text="${section.subject.subjectName}">Môn học</td>
-              <td th:text="${section.semester.semesterName}">Học kỳ</td>
-              <td th:text="${section.studentClass != null ? section.studentClass.classCode : 'Không gán'}">Lớp</td>
-              <td th:text="${section.maxStudents ?: 0}">0</td>
-              <td><span class="badge" th:classappend="${section.status.name() == 'OPEN' ? ' bg-success' : ' bg-secondary'}" th:text="${section.status.name() == 'OPEN' ? 'Mở' : 'Đóng'}">Mở</span></td>
-              <td>
-                <div class="d-flex flex-wrap gap-1">
-                  <a class="btn btn-sm btn-primary" th:href="@{/employee/results(sectionId=${section.id})}">Nhập điểm</a>
-                  <form method="post" th:action="@{/employee/course-sections/delete/{id}(id=${section.id})}" onsubmit="return confirm('Bạn chắc chắn muốn xóa lớp học phần này?');">
-                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <button class="btn btn-sm btn-danger">Xóa</button>
-                  </form>
+        <form method="get" th:action="@{/employee/course-sections}" class="card card-body mb-3">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4"><label class="form-label">Từ khóa</label><input class="form-control" name="keyword"
+                placeholder="Mã lớp học phần hoặc môn học"></div>
+            <div class="col-md-3"><label class="form-label">Học kỳ</label><select class="form-select" name="semesterId">
+                <option value="">Tất cả học kỳ</option>
+                <option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option>
+              </select></div>
+            <div class="col-md-3"><label class="form-label">Môn học</label><select class="form-select" name="subjectId">
+                <option value="">Tất cả môn học</option>
+                <option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}">
+                </option>
+              </select></div>
+            <div class="col-md-2"><button class="btn btn-primary w-100">Lọc</button></div>
+          </div>
+        </form>
+
+        <div class="card mb-3">
+          <div class="card-header"><strong>Mở lớp học phần</strong></div>
+          <div class="card-body">
+            <form class="row g-3" method="post" th:action="@{/employee/course-sections}" th:object="${courseSection}">
+              <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+              <div class="col-md-3"><label class="form-label required">Mã lớp học phần</label><input
+                  class="form-control" th:field="*{sectionCode}" required></div>
+              <div class="col-md-3"><label class="form-label required">Môn học</label><select class="form-select"
+                  th:field="*{subject.id}" required>
+                  <option value="">Chọn môn</option>
+                  <option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}">
+                  </option>
+                </select></div>
+              <div class="col-md-2"><label class="form-label required">Học kỳ</label><select class="form-select"
+                  th:field="*{semester.id}" required>
+                  <option value="">Chọn học kỳ</option>
+                  <option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option>
+                </select></div>
+              <div class="col-md-2"><label class="form-label">Lớp</label><select class="form-select"
+                  th:field="*{studentClass.id}">
+                  <option value="">Không gán</option>
+                  <option th:each="c:${classes}" th:value="${c.id}" th:text="${c.classCode}"></option>
+                </select></div>
+              <div class="col-md-1"><label class="form-label">Sĩ số</label><input class="form-control" type="number"
+                  min="0" th:field="*{maxStudents}"></div>
+              <div class="col-md-1"><label class="form-label">Trạng thái</label><select class="form-select"
+                  th:field="*{status}">
+                  <option th:each="s:${statuses}" th:value="${s}" th:text="${s.name() == 'OPEN' ? 'Mở' : 'Đóng'}">
+                  </option>
+                </select></div>
+              <div class="col-12"><button class="btn btn-primary">Lưu lớp học phần</button></div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><strong>Danh sách lớp học phần</strong></div>
+          <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Mã LHP</th>
+                  <th>Môn học</th>
+                  <th>Học kỳ</th>
+                  <th>Lớp</th>
+                  <th>Sĩ số tối đa</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="section:${courseSections}">
+                  <td th:text="${section.sectionCode}">LHP</td>
+                  <td th:text="${section.subject.subjectName}">Môn học</td>
+                  <td th:text="${section.semester.semesterName}">Học kỳ</td>
+                  <td th:text="${section.studentClass != null ? section.studentClass.classCode : 'Không gán'}">Lớp</td>
+                  <td th:text="${section.maxStudents ?: 0}">0</td>
+                  <td><span class="badge"
+                      th:classappend="${section.status.name() == 'OPEN' ? ' bg-success' : ' bg-secondary'}"
+                      th:text="${section.status.name() == 'OPEN' ? 'Mở' : 'Đóng'}">Mở</span></td>
+                  <td>
+                    <div class="d-flex flex-wrap gap-1">
+                      <button class="btn btn-sm btn-outline-primary" type="button" data-open-modal
+                        th:attr="data-open-modal='#editSection' + ${section.id}">Sửa</button>
+                      <a class="btn btn-sm btn-primary" th:href="@{/employee/results(sectionId=${section.id})}">Nhập
+                        điểm</a>
+                      <form method="post" th:action="@{/employee/course-sections/delete/{id}(id=${section.id})}"
+                        onsubmit="return confirm('Bạn chắc chắn muốn xóa lớp học phần này?');">
+                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                          th:value="${_csrf.token}">
+                        <button class="btn btn-sm btn-danger">Xóa</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(courseSections)}">
+                  <td colspan="7" class="text-center text-muted py-4">Chưa có lớp học phần.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal" th:each="section:${courseSections}" th:id="${'editSection' + section.id}">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header"><strong>Cập nhật lớp học phần</strong><button class="btn btn-sm btn-light"
+                  data-close-modal type="button">Đóng</button></div>
+              <form method="post" th:action="@{/employee/course-sections}">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}">
+                <input type="hidden" name="id" th:value="${section.id}">
+                <div class="modal-body row g-3">
+                  <div class="col-md-4"><label class="form-label required">Mã lớp học phần</label><input
+                      class="form-control" name="sectionCode" th:value="${section.sectionCode}" required></div>
+                  <div class="col-md-4"><label class="form-label required">Môn học</label><select class="form-select"
+                      name="subject.id" required>
+                      <option th:each="s:${subjects}" th:value="${s.id}" th:selected="${section.subject.id == s.id}"
+                        th:text="${s.subjectCode + ' - ' + s.subjectName}"></option>
+                    </select></div>
+                  <div class="col-md-4"><label class="form-label required">Học kỳ</label><select class="form-select"
+                      name="semester.id" required>
+                      <option th:each="s:${semesters}" th:value="${s.id}" th:selected="${section.semester.id == s.id}"
+                        th:text="${s.semesterName}"></option>
+                    </select></div>
+                  <div class="col-md-4"><label class="form-label">Lớp</label><select class="form-select"
+                      name="studentClass.id">
+                      <option value="">Không gán</option>
+                      <option th:each="c:${classes}" th:value="${c.id}"
+                        th:selected="${section.studentClass != null and section.studentClass.id == c.id}"
+                        th:text="${c.classCode}"></option>
+                    </select></div>
+                  <div class="col-md-4"><label class="form-label">Sĩ số tối đa</label><input class="form-control"
+                      type="number" min="0" name="maxStudents" th:value="${section.maxStudents}"></div>
+                  <div class="col-md-4"><label class="form-label">Trạng thái</label><select class="form-select"
+                      name="status">
+                      <option th:each="s:${statuses}" th:value="${s}" th:selected="${section.status == s}"
+                        th:text="${s.name() == 'OPEN' ? 'Mở' : 'Đóng'}"></option>
+                    </select></div>
                 </div>
-              </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(courseSections)}"><td colspan="7" class="text-center text-muted py-4">Chưa có lớp học phần.</td></tr>
-            </tbody>
-          </table>
+                <div class="modal-footer"><button class="btn btn-light" type="button"
+                    data-close-modal>Hủy</button><button class="btn btn-primary">Lưu thay đổi</button></div>
+              </form>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
-</div>
-<script th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-<script th:src="@{/js/app.js}"></script>
+      </section>
+    </main>
+  </div>
+  <script th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+  <script th:src="@{/js/app.js}"></script>
 </body>
+
 </html>

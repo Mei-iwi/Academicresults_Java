@@ -28,6 +28,8 @@ public class StudentHomeController {
         model.addAttribute("student", student);
         model.addAttribute("results", results);
         model.addAttribute("gpa", studentResultService.gpa(results));
+        model.addAttribute("passedCount", results.stream().filter(r -> "PASS".equals(studentResultService.passFail(r))).count());
+        model.addAttribute("failedCount", results.stream().filter(r -> "FAIL".equals(studentResultService.passFail(r))).count());
         return "student/dashboard";
     }
 
@@ -64,6 +66,6 @@ public class StudentHomeController {
 
     private Student currentStudent(Principal principal) {
         return studentServices.getStudentByAccountUsername(principal.getName())
-                .orElseThrow(() -> new IllegalArgumentException("Student data not found for account: " + principal.getName()));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hồ sơ sinh viên cho tài khoản đang đăng nhập."));
     }
 }

@@ -7,32 +7,6 @@
         return Array.from(root.querySelectorAll(sel));
     }
 
-    window.AppUI = {
-        toast: function (msg) {
-            let area = qs(".toast-area");
-
-            if (!area) {
-                area = document.createElement("div");
-                area.className = "toast-area";
-                document.body.appendChild(area);
-            }
-
-            const box = document.createElement("div");
-            box.className = "toast-box";
-            box.textContent = msg;
-            area.appendChild(box);
-
-            setTimeout(function () {
-                box.style.opacity = "0";
-                box.style.transform = "translateY(8px)";
-            }, 2400);
-
-            setTimeout(function () {
-                box.remove();
-            }, 3000);
-        }
-    };
-
     function getSidebar() {
         return qs(".sidebar");
     }
@@ -129,29 +103,11 @@
             return;
         }
 
-        const action = e.target.closest("[data-action]");
+        const print = e.target.closest("[data-print]");
 
-        if (action) {
+        if (print) {
             e.preventDefault();
-
-            const type = action.getAttribute("data-action");
-
-            const messages = {
-                save: "Đã lưu dữ liệu.",
-                draft: "Đã lưu nháp điểm.",
-                publish: "Đã chuyển trạng thái công bố/khóa điểm.",
-                lock: "Đã đổi trạng thái khóa/mở.",
-                reset: "Đã tạo mật khẩu tạm thời.",
-                delete: "Đã thực hiện thao tác xóa.",
-                print: "Đang mở hộp thoại in."
-            };
-
-            if (type === "print") {
-                window.print();
-                return;
-            }
-
-            AppUI.toast(messages[type] || "Đã thực hiện thao tác.");
+            window.print();
         }
     });
 
