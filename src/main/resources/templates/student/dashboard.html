@@ -1,116 +1,78 @@
 <!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="route" content="/student/dashboard">
-  <title>Dashboard sinh viên | Quản lý kết quả học tập</title>
-  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
-  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+  <title>Bảng điều khiển sinh viên</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-
 <body data-role="student">
-  <div class="app-shell">
-
-    <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-student" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
-        <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
-          <div class="sidebar-subtitle">Sinh viên</div>
+<div class="app-shell">
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar sidebar-student">
+    <div class="sidebar-body" th:replace="~{layouts/student-layout :: sidebar('dashboard')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Bảng điều khiển sinh viên</h1>
+        <div class="page-subtitle">
+          <span th:text="${student.studentCode}">SV001</span>
+          <span> - </span>
+          <span th:text="${student.fullName}">Nguyễn Văn A</span>
         </div>
       </div>
-      <div class="sidebar-body">
-        <div th:replace="~{/layouts/student-layout :: sidebar('dashboard')}"></div>
+      <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+    <section class="content">
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">Môn đã công bố</div>
+            <div class="metric-value" th:text="${#lists.size(results)}">0</div>
+          </div></div>
+        </div>
+        <div class="col-md-4">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">GPA tích lũy</div>
+            <div class="metric-value" th:text="${gpa}">0.00</div>
+          </div></div>
+        </div>
+        <div class="col-md-4">
+          <div class="card metric-card"><div class="card-body">
+            <div class="metric-label">Trạng thái học tập</div>
+            <div class="metric-value"
+                 th:text="${student.status.name() == 'STUDYING' ? 'Đang học' : (student.status.name() == 'PAUSED' ? 'Tạm nghỉ' : (student.status.name() == 'GRADUATED' ? 'Đã tốt nghiệp' : 'Thôi học'))}">Đang học</div>
+          </div></div>
+        </div>
       </div>
-      <div class="sidebar-footer">
-        <div th:replace="~{layouts/User :: logout}"></div>
-
+      <div class="card">
+        <div class="card-header"><strong>Kết quả mới công bố</strong></div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover align-middle">
+            <thead><tr><th>Môn học</th><th>Tổng điểm</th><th>Điểm chữ</th><th>Kết quả</th></tr></thead>
+            <tbody>
+            <tr th:each="r:${results}">
+              <td th:text="${r.section.subject.subjectName}">Tên môn học</td>
+              <td th:text="${r.totalScore}">0</td>
+              <td th:text="${r.letterGrade}">A</td>
+              <td>
+                <span class="badge" th:classappend="${r.totalScore >= 4} ? ' bg-success' : ' bg-danger'"
+                      th:text="${r.totalScore >= 4 ? 'Đạt' : 'Không đạt'}">Đạt</span>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(results)}">
+              <td colspan="4" class="text-center text-muted py-4">Chưa có kết quả được công bố.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-          <div>
-            <h1 class="page-title">Dashboard sinh viên</h1>
-            <div class="page-subtitle">Thông tin nhanh và học kỳ gần nhất.</div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-
-        </div>
-      </header>
-      <section class="content">
-        <div class="row mb-4">
-          <div class="col-md-4 mb-3">
-            <div class="card metric-card">
-              <div class="card-body">
-                <div class="metric-label">Điểm TB học kỳ gần nhất</div>
-                <div class="metric-value">7.45</div><span class="badge bg-success">Đạt</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card metric-card">
-              <div class="card-body">
-                <div class="metric-label">Số môn đã công bố</div>
-                <div class="metric-value">5</div><span class="badge bg-primary">HK1 2025-2026</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card metric-card">
-              <div class="card-body">
-                <div class="metric-label">Tín chỉ tích lũy mẫu</div>
-                <div class="metric-value">68</div><span class="badge bg-info">Theo dữ liệu công bố</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><strong>Thông tin học kỳ gần nhất</strong></div>
-          <div class="card-body table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Môn</th>
-                  <th>Tín chỉ</th>
-                  <th>Điểm tổng kết</th>
-                  <th>Kết quả</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Công nghệ Java</td>
-                  <td>3</td>
-                  <td>7.9</td>
-                  <td><span class="badge bg-success">Đạt</span></td>
-                </tr>
-                <tr>
-                  <td>Hệ cơ sở dữ liệu</td>
-                  <td>3</td>
-                  <td>6.8</td>
-                  <td><span class="badge bg-success">Đạt</span></td>
-                </tr>
-                <tr>
-                  <td>Lập trình mạng</td>
-                  <td>3</td>
-                  <td>Chưa công bố</td>
-                  <td><span class="badge bg-warning">Chờ điểm</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+    </section>
+  </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
 </body>
-
 </html>

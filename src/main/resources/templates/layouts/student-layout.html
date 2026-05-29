@@ -1,34 +1,22 @@
 <!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <body>
-
   <div class="sidebar-body" th:fragment="sidebar(activeMenu)">
-    <div class="sidebar-section">Menu Sinh viên</div>
-
+    <div class="sidebar-section">Menu sinh viên</div>
     <nav class="sidebar-nav">
-
-      <a href="/student/dashboard" th:href="@{/student/dashboard}"
-        th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
-        <span class="icon">🏠</span>
-        <span>Trang chủ</span>
+      <a href="/student/dashboard" th:href="@{/student/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
+        <span class="icon">Home</span><span>Bảng điều khiển</span>
       </a>
-
-      <a href="/student/results" th:href="@{/student/results}"
-        th:classappend="${activeMenu == 'results'} ? ' active' : ''">
-        <span class="icon">📄</span>
-        <span>Bảng điểm học kỳ</span>
+      <a href="/student/profile" th:href="@{/student/profile}" th:classappend="${activeMenu == 'profile'} ? ' active' : ''">
+        <span class="icon">ID</span><span>Hồ sơ</span>
       </a>
-
-      <a href="/student/transcript" th:href="@{/student/transcript}"
-        th:classappend="${activeMenu == 'transcript'} ? ' active' : ''">
-        <span class="icon">🎓</span>
-        <span>Bảng điểm tổng hợp</span>
+      <a href="/student/results" th:href="@{/student/results}" th:classappend="${activeMenu == 'results'} ? ' active' : ''">
+        <span class="icon">KQ</span><span>Kết quả học tập</span>
       </a>
-
+      <a href="/student/transcript" th:href="@{/student/transcript}" th:classappend="${activeMenu == 'transcript'} ? ' active' : ''">
+        <span class="icon">GPA</span><span>Bảng điểm</span>
+      </a>
     </nav>
   </div>
-
 </body>
-
 </html>

@@ -1,152 +1,193 @@
 <!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="route" content="/admin/accounts">
   <title>Quản lý tài khoản | Quản lý kết quả học tập</title>
-  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
-  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-
 <body data-role="admin">
-  <div class="app-shell">
+<div class="app-shell">
+  <aside class="sidebar sidebar-admin" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">KQ</div>
+      <div><div class="sidebar-title">Quản lý kết quả</div><div class="sidebar-subtitle">Quản trị viên</div></div>
+    </div>
+    <div class="sidebar-body" th:replace="~{layouts/admin-layout :: sidebar('accounts')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
 
-    <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-admin" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
-        <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
-          <div class="sidebar-subtitle">Quản trị viên</div>
-        </div>
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Quản lý tài khoản</h1>
+        <div class="page-subtitle">Tìm kiếm, tạo tài khoản, đổi vai trò, khóa/mở khóa và đặt lại mật khẩu.</div>
       </div>
-      <div class="sidebar-body">
-        <div th:replace="~{layouts/admin-layout :: sidebar('accounts')}"></div>
-      </div>
-      <div class="sidebar-footer">
-        <div th:replace="~{layouts/User :: logout}"></div>
-      </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-          <div>
-            <h1 class="page-title">Quản lý tài khoản</h1>
-            <div class="page-subtitle">Danh sách, thêm/sửa/khóa tài khoản và reset mật khẩu.</div>
+      <div class="ms-auto text-end" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+
+    <section class="content">
+      <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+      <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+      <form class="card card-body mb-3" method="get" th:action="@{/admin/accounts}">
+        <div class="row g-2 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label">Từ khóa</label>
+            <input class="form-control" name="keyword" th:value="${keyword}" placeholder="username, họ tên, email">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Vai trò</label>
+            <select class="form-select" name="roleCode">
+              <option value="">Tất cả</option>
+              <option th:each="role : ${roles}" th:value="${role}" th:text="${role}" th:selected="${selectedRole == role}"></option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Trạng thái</label>
+            <select class="form-select" name="enabled">
+              <option value="">Tất cả</option>
+              <option value="true" th:selected="${selectedEnabled == true}">Đang hoạt động</option>
+              <option value="false" th:selected="${selectedEnabled == false}">Đã khóa</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100">Lọc</button>
           </div>
         </div>
-        <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-        </div>
-      </header>
-      <section class="content">
-        <div class="card mb-4">
-          <div class="card-header d-flex justify-content-between"><strong>Bộ lọc tài khoản</strong><button
-              class="btn btn-primary" data-open-modal="#accountModal">+ Thêm tài khoản</button></div>
-          <div class="card-body toolbar">
-            <div><label class="form-label">Từ khóa</label><input class="form-control" data-table-search="#accountTable"
-                placeholder="Tìm username, họ tên, email"></div>
-            <div><label class="form-label">Vai trò</label><select class="form-select">
-                <option>Tất cả</option>
-                <option>ADMIN</option>
-                <option>EMPLOYEE</option>
-                <option>STUDENT</option>
-              </select></div>
-            <div><label class="form-label">Trạng thái</label><select class="form-select">
-                <option>Tất cả</option>
-                <option>Hoạt động</option>
-                <option>Đã khóa</option>
-              </select></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><strong>Danh sách tài khoản</strong></div>
-          <div class="card-body table-responsive">
-            <table id="accountTable" class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Họ tên</th>
-                  <th>Email</th>
-                  <th>Vai trò</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>admin</td>
-                  <td>Quản trị hệ thống</td>
-                  <td>admin@school.edu.vn</td>
-                  <td><span class="badge bg-danger">ADMIN</span></td>
-                  <td><span class="badge bg-success">Hoạt động</span></td>
-                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
-                      data-open-modal="#accountModal">Sửa</button><button class="btn btn-sm btn-warning"
-                      data-action="reset">Reset mật khẩu</button><button class="btn btn-sm btn-secondary"
-                      data-action="lock">Khóa</button></td>
-                </tr>
-                <tr>
-                  <td>gv001</td>
-                  <td>Nguyễn Văn A</td>
-                  <td>nva@school.edu.vn</td>
-                  <td><span class="badge bg-primary">EMPLOYEE</span></td>
-                  <td><span class="badge bg-success">Hoạt động</span></td>
-                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
-                      data-open-modal="#accountModal">Sửa</button><button class="btn btn-sm btn-warning"
-                      data-action="reset">Reset mật khẩu</button><button class="btn btn-sm btn-secondary"
-                      data-action="lock">Khóa</button></td>
-                </tr>
-                <tr>
-                  <td>sv001</td>
-                  <td>Trần Thị B</td>
-                  <td>sv001@school.edu.vn</td>
-                  <td><span class="badge bg-info">STUDENT</span></td>
-                  <td><span class="badge bg-secondary">Đã khóa</span></td>
-                  <td class="action-group"><button class="btn btn-sm btn-outline-primary"
-                      data-open-modal="#accountModal">Sửa</button><button class="btn btn-sm btn-warning"
-                      data-action="reset">Reset mật khẩu</button><button class="btn btn-sm btn-success"
-                      data-action="lock">Mở khóa</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="modal" id="accountModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header"><strong>Thêm / sửa tài khoản</strong><button class="btn btn-sm btn-light"
-                  data-close-modal>×</button></div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-6 mb-3"><label class="form-label required">Username</label><input
-                      class="form-control" placeholder="username"></div>
-                  <div class="col-md-6 mb-3"><label class="form-label required">Vai trò</label><select
-                      class="form-select">
-                      <option>ADMIN</option>
-                      <option>EMPLOYEE</option>
-                      <option>STUDENT</option>
-                    </select></div>
-                  <div class="col-md-6 mb-3"><label class="form-label required">Họ tên</label><input
-                      class="form-control" placeholder="Họ tên"></div>
-                  <div class="col-md-6 mb-3"><label class="form-label">Email</label><input class="form-control"
-                      placeholder="email@school.edu.vn"></div>
-                  <div class="col-12 mb-3"><label class="form-label">Liên kết sinh viên/nhân viên</label><input
-                      class="form-control" placeholder="Mã sinh viên hoặc mã nhân viên nếu có"></div>
-                </div>
-              </div>
-              <div class="modal-footer"><button class="btn btn-light" data-close-modal>Đóng</button><button
-                  class="btn btn-primary" data-action="save" data-close-modal>Lưu</button></div>
+      </form>
+
+      <div class="card mb-3">
+        <div class="card-header"><strong>Thêm / cập nhật tài khoản</strong></div>
+        <div class="card-body">
+          <form class="row g-3" method="post" th:action="@{/admin/accounts}">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-3">
+              <label class="form-label required">Username</label>
+              <input class="form-control" name="username" required maxlength="50">
             </div>
-          </div>
+            <div class="col-md-3">
+              <label class="form-label required">Mật khẩu</label>
+              <input class="form-control" name="password" type="password" required>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label required">Vai trò</label>
+              <select class="form-select" name="roleCode" required>
+                <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Sinh viên</label>
+              <select class="form-select" name="studentId">
+                <option value="">Không liên kết</option>
+                <option th:each="student : ${students}" th:value="${student.id}"
+                        th:text="${student.studentCode + ' - ' + student.fullName}"></option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Nhân viên</label>
+              <select class="form-select" name="employeeId">
+                <option value="">Không liên kết</option>
+                <option th:each="employee : ${employees}" th:value="${employee.id}"
+                        th:text="${employee.employeeCode + ' - ' + employee.fullName}"></option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Trạng thái</label>
+              <select class="form-select" name="enabled">
+                <option value="true">Hoạt động</option>
+                <option value="false">Khóa</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button class="btn btn-primary w-100">Lưu tài khoản</button>
+            </div>
+          </form>
         </div>
-      </section>
-    </main>
-  </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
-</body>
+      </div>
 
+      <div class="card">
+        <div class="card-header"><strong>Danh sách tài khoản</strong></div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+              <th>Username</th>
+              <th>Người dùng</th>
+              <th>Email</th>
+              <th>Vai trò</th>
+              <th>Trạng thái</th>
+              <th>Cập nhật</th>
+              <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="account : ${accounts}">
+              <td th:text="${account.username}"></td>
+              <td th:text="${account.employee != null ? account.employee.fullName : (account.student != null ? account.student.fullName : 'Quản trị hệ thống')}"></td>
+              <td th:text="${account.employee != null ? account.employee.email : (account.student != null ? account.student.email : '')}"></td>
+              <td><span class="badge bg-primary" th:text="${account.role.roleCode}"></span></td>
+              <td>
+                <span class="badge" th:classappend="${account.enabled} ? ' bg-success' : ' bg-secondary'"
+                      th:text="${account.enabled} ? 'Hoạt động' : 'Đã khóa'"></span>
+              </td>
+              <td>
+                <form class="row g-1" method="post" th:action="@{/admin/accounts}">
+                  <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <input type="hidden" name="id" th:value="${account.id}">
+                  <input type="hidden" name="username" th:value="${account.username}">
+                  <input type="hidden" name="enabled" th:value="${account.enabled}">
+                  <div class="col">
+                    <select class="form-select form-select-sm" name="roleCode">
+                      <option th:each="role : ${roles}" th:value="${role}" th:text="${role}" th:selected="${account.role.roleCode == role}"></option>
+                    </select>
+                  </div>
+                  <div class="col">
+                    <select class="form-select form-select-sm" name="studentId">
+                      <option value="">Không SV</option>
+                      <option th:each="student : ${students}" th:value="${student.id}"
+                              th:text="${student.studentCode}"
+                              th:selected="${account.student != null and account.student.id == student.id}"></option>
+                    </select>
+                  </div>
+                  <div class="col">
+                    <select class="form-select form-select-sm" name="employeeId">
+                      <option value="">Không NV</option>
+                      <option th:each="employee : ${employees}" th:value="${employee.id}"
+                              th:text="${employee.employeeCode}"
+                              th:selected="${account.employee != null and account.employee.id == employee.id}"></option>
+                    </select>
+                  </div>
+                  <div class="col-auto"><button class="btn btn-sm btn-outline-primary">Lưu</button></div>
+                </form>
+              </td>
+              <td class="d-flex flex-wrap gap-1">
+                <form method="post" th:action="@{/admin/accounts/{id}/enabled(id=${account.id})}">
+                  <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <input type="hidden" name="enabled" th:value="${!account.enabled}">
+                  <button class="btn btn-sm" th:classappend="${account.enabled} ? ' btn-secondary' : ' btn-success'"
+                          th:text="${account.enabled} ? 'Khóa' : 'Mở khóa'"></button>
+                </form>
+                <form class="d-flex gap-1" method="post" th:action="@{/admin/accounts/{id}/reset-password(id=${account.id})}">
+                  <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <input class="form-control form-control-sm" name="password" type="password" placeholder="Mật khẩu mới" required style="width:130px">
+                  <button class="btn btn-sm btn-warning" onclick="return confirm('Đặt lại mật khẩu tài khoản này?');">Đặt lại</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(accounts)}">
+              <td colspan="7" class="text-center text-muted">Không có tài khoản phù hợp.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<script th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
 </html>

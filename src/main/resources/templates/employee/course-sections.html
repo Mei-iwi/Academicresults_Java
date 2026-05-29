@@ -6,115 +6,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="route" content="/employee/course-sections">
   <title>Quản lý lớp học phần | Quản lý kết quả học tập</title>
-  <link rel="stylesheet" href="../../bootstrap/css/bootstrap-local.css" th:href="@{/bootstrap/css/bootstrap-local.css}">
-  <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}">
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
 <body data-role="employee">
-  <div class="app-shell">
+<div class="app-shell">
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar sidebar-employee" id="sidebar">
+    <div class="sidebar-brand"><div class="brand-mark">KQ</div><div><div class="sidebar-title">Quản lý kết quả</div><div class="sidebar-subtitle">Nhân viên giáo vụ</div></div></div>
+    <div class="sidebar-body" th:replace="~{/layouts/employee-layout :: sidebar('course-sections')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
+        <div><h1 class="page-title">Quản lý lớp học phần</h1><div class="page-subtitle">Mở lớp học phần, gán môn học, học kỳ và lớp sinh viên.</div></div>
+      </div>
+      <div class="d-flex align-items-center gap-2 ms-auto text-end" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+    <section class="content">
+      <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+      <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
-    <div class="sidebar-overlay"></div>
-    <aside class="sidebar sidebar-employee" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-mark">KQ</div>
-        <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
-          <div class="sidebar-subtitle">Nhân viên giáo vụ</div>
+      <form method="get" th:action="@{/employee/course-sections}" class="card card-body mb-3">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4"><label class="form-label">Từ khóa</label><input class="form-control" name="keyword" placeholder="Mã lớp học phần hoặc môn học"></div>
+          <div class="col-md-3"><label class="form-label">Học kỳ</label><select class="form-select" name="semesterId"><option value="">Tất cả học kỳ</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option></select></div>
+          <div class="col-md-3"><label class="form-label">Môn học</label><select class="form-select" name="subjectId"><option value="">Tất cả môn học</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option></select></div>
+          <div class="col-md-2"><button class="btn btn-primary w-100">Lọc</button></div>
+        </div>
+      </form>
+
+      <div class="card mb-3">
+        <div class="card-header"><strong>Mở lớp học phần</strong></div>
+        <div class="card-body">
+          <form class="row g-3" method="post" th:action="@{/employee/course-sections}" th:object="${courseSection}">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-3"><label class="form-label required">Mã lớp học phần</label><input class="form-control" th:field="*{sectionCode}" required></div>
+            <div class="col-md-3"><label class="form-label required">Môn học</label><select class="form-select" th:field="*{subject.id}" required><option value="">Chọn môn</option><option th:each="s:${subjects}" th:value="${s.id}" th:text="${s.subjectCode + ' - ' + s.subjectName}"></option></select></div>
+            <div class="col-md-2"><label class="form-label required">Học kỳ</label><select class="form-select" th:field="*{semester.id}" required><option value="">Chọn học kỳ</option><option th:each="s:${semesters}" th:value="${s.id}" th:text="${s.semesterName}"></option></select></div>
+            <div class="col-md-2"><label class="form-label">Lớp</label><select class="form-select" th:field="*{studentClass.id}"><option value="">Không gán</option><option th:each="c:${classes}" th:value="${c.id}" th:text="${c.classCode}"></option></select></div>
+            <div class="col-md-1"><label class="form-label">Sĩ số</label><input class="form-control" type="number" min="0" th:field="*{maxStudents}"></div>
+            <div class="col-md-1"><label class="form-label">Trạng thái</label><select class="form-select" th:field="*{status}"><option th:each="s:${statuses}" th:value="${s}" th:text="${s.name() == 'OPEN' ? 'Mở' : 'Đóng'}"></option></select></div>
+            <div class="col-12"><button class="btn btn-primary">Lưu lớp học phần</button></div>
+          </form>
         </div>
       </div>
-      <div class="sidebar-body">
-        <div th:replace="~{/layouts/employee-layout :: sidebar('course-sections')}"></div>
-      </div>
-      <div class="sidebar-footer">
-        <div th:replace="~{layouts/User :: logout}"></div>
 
+      <div class="card">
+        <div class="card-header"><strong>Danh sách lớp học phần</strong></div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover align-middle">
+            <thead><tr><th>Mã LHP</th><th>Môn học</th><th>Học kỳ</th><th>Lớp</th><th>Sĩ số tối đa</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="section:${courseSections}">
+              <td th:text="${section.sectionCode}">LHP</td>
+              <td th:text="${section.subject.subjectName}">Môn học</td>
+              <td th:text="${section.semester.semesterName}">Học kỳ</td>
+              <td th:text="${section.studentClass != null ? section.studentClass.classCode : 'Không gán'}">Lớp</td>
+              <td th:text="${section.maxStudents ?: 0}">0</td>
+              <td><span class="badge" th:classappend="${section.status.name() == 'OPEN' ? ' bg-success' : ' bg-secondary'}" th:text="${section.status.name() == 'OPEN' ? 'Mở' : 'Đóng'}">Mở</span></td>
+              <td>
+                <div class="d-flex flex-wrap gap-1">
+                  <a class="btn btn-sm btn-primary" th:href="@{/employee/results(sectionId=${section.id})}">Nhập điểm</a>
+                  <form method="post" th:action="@{/employee/course-sections/delete/{id}(id=${section.id})}" onsubmit="return confirm('Bạn chắc chắn muốn xóa lớp học phần này?');">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="btn btn-sm btn-danger">Xóa</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(courseSections)}"><td colspan="7" class="text-center text-muted py-4">Chưa có lớp học phần.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light mobile-toggle" data-toggle-sidebar>☰</button>
-          <div>
-            <h1 class="page-title">Quản lý lớp học phần</h1>
-            <div class="page-subtitle">Mở lớp học phần, gán môn/học kỳ/lớp.</div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2 ms-auto text-end">
-          <div th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
-
-        </div>
-      </header>
-      <section class="content">
-        <div class="card mb-4">
-          <div class="card-header"><strong>Mở lớp học phần</strong></div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-3 mb-3"><label class="form-label required">Mã lớp học phần</label><input
-                  class="form-control" value="JAVA01"></div>
-              <div class="col-md-3 mb-3"><label class="form-label required">Môn học</label><select class="form-select">
-                  <option>Công nghệ Java</option>
-                  <option>Hệ cơ sở dữ liệu</option>
-                </select></div>
-              <div class="col-md-3 mb-3"><label class="form-label required">Học kỳ</label><select class="form-select">
-                  <option>HK1 2025-2026</option>
-                  <option>HK2 2025-2026</option>
-                </select></div>
-              <div class="col-md-3 mb-3"><label class="form-label required">Lớp</label><select class="form-select">
-                  <option>14DHTH01</option>
-                  <option>14DHTH02</option>
-                </select></div>
-              <div class="col-md-3 mb-3"><label class="form-label">Số lượng dự kiến</label><input type="number"
-                  class="form-control" value="45"></div>
-              <div class="col-md-9 mb-3"><label class="form-label">Ghi chú</label><input class="form-control"
-                  placeholder="Ghi chú lịch học/nhóm nếu có"></div>
-            </div><button class="btn btn-primary" data-action="save">Lưu lớp học phần</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header d-flex justify-content-between"><strong>Danh sách lớp học phần</strong><input
-              class="form-control" style="max-width:260px" data-table-search="#sectionTable"
-              placeholder="Tìm lớp học phần"></div>
-          <div class="card-body table-responsive">
-            <table id="sectionTable" class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Mã LHP</th>
-                  <th>Môn</th>
-                  <th>Học kỳ</th>
-                  <th>Lớp</th>
-                  <th>Sĩ số</th>
-                  <th>Trạng thái điểm</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>JAVA01</td>
-                  <td>Công nghệ Java</td>
-                  <td>HK1 2025-2026</td>
-                  <td>14DHTH01</td>
-                  <td>45</td>
-                  <td><span class="badge bg-warning">Nháp</span></td>
-                  <td><a class="btn btn-sm btn-primary" href="/employee/results">Nhập điểm</a></td>
-                </tr>
-                <tr>
-                  <td>CSDL02</td>
-                  <td>Hệ cơ sở dữ liệu</td>
-                  <td>HK1 2025-2026</td>
-                  <td>14DHTH02</td>
-                  <td>42</td>
-                  <td><span class="badge bg-success">Công bố</span></td>
-                  <td><a class="btn btn-sm btn-secondary" href="/employee/results-publish">Trạng thái</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script src="../../bootstrap/js/bootstrap-local.js" th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
-  <script src="../../js/app.js" th:src="@{/js/app.js}"></script>
+    </section>
+  </main>
+</div>
+<script th:src="@{/bootstrap/js/bootstrap-local.js}"></script>
+<script th:src="@{/js/app.js}"></script>
 </body>
-
 </html>

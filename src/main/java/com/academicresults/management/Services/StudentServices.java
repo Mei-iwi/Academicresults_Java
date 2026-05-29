@@ -36,6 +36,13 @@ public class StudentServices
         return studentRepository.findByFullNameContainingOrStudentCodeContaining(keyword, keyword);
     }
 
+    @Transactional(readOnly = true)
+    public List<Student> searchStudents(String keyword, Long classId, StudentStatus status)
+    {
+        String normalizedKeyword = (keyword == null || keyword.isBlank()) ? null : keyword;
+        return studentRepository.search(normalizedKeyword, classId, status);
+    }
+
 
     public List<Student> getStudentsByClass(Long classId)
     {
@@ -95,6 +102,12 @@ public class StudentServices
     public java.util.Optional<Student> getStudentByAccountUsername(String username)
     {
         return studentRepository.findByAccountUsername(username);
+    }
+
+    @Transactional(readOnly = true)
+    public long countStudents()
+    {
+        return studentRepository.count();
     }
 
 }

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hồ sơ sinh viên</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-local.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body data-role="student">
+<div class="app-shell">
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar sidebar-student">
+    <div class="sidebar-body" th:replace="~{layouts/student-layout :: sidebar('profile')}"></div>
+    <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Hồ sơ sinh viên</h1>
+        <div class="page-subtitle">Thông tin học vụ gắn với tài khoản sinh viên.</div>
+      </div>
+      <div class="ms-auto" th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
+    </header>
+    <section class="content">
+      <div class="card">
+        <div class="card-header"><strong>Thông tin cá nhân</strong></div>
+        <div class="card-body row g-3">
+          <div class="col-md-4"><strong>Mã sinh viên</strong><div th:text="${student.studentCode}">SV001</div></div>
+          <div class="col-md-4"><strong>Họ tên</strong><div th:text="${student.fullName}">Nguyễn Văn A</div></div>
+          <div class="col-md-4"><strong>Lớp</strong><div th:text="${student.studentClass.classCode}">Lớp</div></div>
+          <div class="col-md-4"><strong>Email</strong><div th:text="${student.email ?: 'Chưa cập nhật'}">email</div></div>
+          <div class="col-md-4"><strong>Số điện thoại</strong><div th:text="${student.phone ?: 'Chưa cập nhật'}">phone</div></div>
+          <div class="col-md-4"><strong>Trạng thái</strong>
+            <div th:text="${student.status.name() == 'STUDYING' ? 'Đang học' : (student.status.name() == 'PAUSED' ? 'Tạm nghỉ' : (student.status.name() == 'GRADUATED' ? 'Đã tốt nghiệp' : 'Thôi học'))}">Đang học</div>
+          </div>
+          <div class="col-md-4"><strong>Ngày sinh</strong><div th:text="${student.dateOfBirth}">2005-01-01</div></div>
+          <div class="col-md-4"><strong>Giới tính</strong>
+            <div th:text="${student.gender.name() == 'MALE' ? 'Nam' : (student.gender.name() == 'FEMALE' ? 'Nữ' : 'Khác')}">Nam</div>
+          </div>
+          <div class="col-md-4"><strong>Địa chỉ</strong><div th:text="${student.address ?: 'Chưa cập nhật'}">Địa chỉ</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

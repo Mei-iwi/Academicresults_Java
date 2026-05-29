@@ -137,12 +137,12 @@
             const type = action.getAttribute("data-action");
 
             const messages = {
-                save: "Đã lưu dữ liệu mẫu trên giao diện.",
-                draft: "Đã lưu nháp điểm trên giao diện.",
-                publish: "Đã chuyển trạng thái công bố/khóa điểm trên giao diện.",
-                lock: "Đã đổi trạng thái khóa/mở tài khoản mẫu.",
-                reset: "Đã tạo mật khẩu tạm thời mẫu.",
-                delete: "Đã mô phỏng thao tác xóa dữ liệu.",
+                save: "Đã lưu dữ liệu.",
+                draft: "Đã lưu nháp điểm.",
+                publish: "Đã chuyển trạng thái công bố/khóa điểm.",
+                lock: "Đã đổi trạng thái khóa/mở.",
+                reset: "Đã tạo mật khẩu tạm thời.",
+                delete: "Đã thực hiện thao tác xóa.",
                 print: "Đang mở hộp thoại in."
             };
 
@@ -151,7 +151,7 @@
                 return;
             }
 
-            AppUI.toast(messages[type] || "Đã thực hiện thao tác mẫu.");
+            AppUI.toast(messages[type] || "Đã thực hiện thao tác.");
         }
     });
 
