@@ -50,4 +50,10 @@ public class Account extends AuditableEntity {
     @Builder.Default
     @Column(name = "enabled", nullable = false)
     private Boolean enabled = true;
+
+    @Column(name = "failed_attempt")
+    private Integer failedAttempt = 0;
+
+    @Column(name = "lock_time")
+    private java.util.Date lockTime;
 }
