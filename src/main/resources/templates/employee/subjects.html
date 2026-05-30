@@ -52,84 +52,124 @@
           <div class="col-lg-4">
             <form class="card card-body" method="post" th:action="@{/employee/subjects}" th:object="${subject}">
               <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
               <h2 class="h6 mb-3">Thêm môn học</h2>
-              <label class="form-label required">Mã môn học</label><input class="form-control mb-3"
-                th:field="*{subjectCode}" required>
-              <label class="form-label required">Tên môn học</label><input class="form-control mb-3"
-                th:field="*{subjectName}" required>
-              <label class="form-label required">Số tín chỉ</label><input class="form-control mb-3" type="number"
-                min="1" th:field="*{credits}" required>
-              <label class="form-label">Trạng thái</label><select class="form-select mb-3" th:field="*{active}">
+
+              <label class="form-label required">Mã môn học</label>
+              <input class="form-control mb-3" th:field="*{subjectCode}" maxlength="20" required>
+
+              <label class="form-label required">Tên môn học</label>
+              <input class="form-control mb-3" th:field="*{subjectName}" maxlength="100" required>
+
+              <label class="form-label required">Số tín chỉ</label>
+              <input class="form-control mb-3" type="number" min="1" th:field="*{credits}" required>
+
+              <label class="form-label">Trạng thái</label>
+              <select class="form-select mb-3" th:field="*{active}">
                 <option value="true">Hoạt động</option>
                 <option value="false">Ngừng sử dụng</option>
               </select>
+
               <button class="btn btn-primary">Lưu môn học</button>
             </form>
           </div>
+
           <div class="col-lg-8">
             <form method="get" th:action="@{/employee/subjects}" class="card card-body mb-3">
               <div class="row g-2">
-                <div class="col"><input class="form-control" name="keyword" placeholder="Tìm theo mã hoặc tên môn học"
-                    th:value="${param.keyword}"></div>
-                <div class="col-auto"><button class="btn btn-primary">Tìm kiếm</button></div>
+                <div class="col">
+                  <input class="form-control" name="keyword" placeholder="Tìm theo mã hoặc tên môn học"
+                    th:value="${param.keyword}">
+                </div>
+                <div class="col-auto">
+                  <button class="btn btn-primary">Tìm kiếm</button>
+                </div>
               </div>
             </form>
+
             <div class="card">
-              <div class="card-header"><strong>Danh sách môn học</strong></div>
+              <div class="card-header">
+                <strong>Danh sách môn học</strong>
+              </div>
+
               <div class="card-body table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle subject-table">
                   <thead>
                     <tr>
-                      <th>Mã</th>
-                      <th>Tên môn học</th>
-                      <th>Tín chỉ</th>
-                      <th>Trạng thái</th>
-                      <th class="text-end">Thao tác</th>
+                      <th style="width: 16%;">Mã</th>
+                      <th style="width: 28%;">Tên môn học</th>
+                      <th style="width: 12%;">Tín chỉ</th>
+                      <th style="width: 18%;">Trạng thái</th>
+                      <th style="width: 26%;" class="text-end">Thao tác</th>
                     </tr>
                   </thead>
+
                   <tbody>
                     <tr th:each="s : ${subjects}">
+                      <td>
+                        <input class="form-control form-control-sm" name="subjectCode" maxlength="20" required
+                          th:value="${s.subjectCode}" th:attr="form=${'updateSubjectForm' + s.id}">
+                      </td>
 
-                      <form class="row g-2 align-items-center" method="post" th:action="@{/employee/subjects}">
-                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
-                          th:value="${_csrf.token}">
-                        <input type="hidden" name="id" th:value="${s.id}">
-                        <td class="col-md-2"><input class="form-control form-control-sm" name="subjectCode"
-                            th:value="${s.subjectCode}" required>
-                        </td>
-                        <td class="col-md-2"><input class="form-control form-control-sm" name="subjectName"
-                            th:value="${s.subjectName}" required>
-                        </td>
-                        <td class="col-md-2"><input class="form-control form-control-sm" name="credits" type="number"
-                            min="1" th:value="${s.credits}" required>
-                        </td>
-                        <td class="col-md-2"><select class="form-select form-select-sm" name="active">
-                            <option value="true" th:selected="${s.active}">Hoạt động</option>
-                            <option value="false" th:selected="${!s.active}">Ngừng sử dụng</option>
-                          </select>
-                        </td>
-                        <td class="col-md-2 text-end d-flex">
-                          <button class="btn btn-sm btn-outline-primary">Cập nhật</button>
-                          <button style="margin-left: 10px;" class="btn btn-sm btn-danger"
-                            th:formaction="@{/employee/subjects/delete/{id}(id=${s.id})}"
-                            onclick="return confirm('Xóa môn học này?')">Xóa
+                      <td>
+                        <input class="form-control form-control-sm" name="subjectName" maxlength="100" required
+                          th:value="${s.subjectName}" th:attr="form=${'updateSubjectForm' + s.id}">
+                      </td>
+
+                      <td>
+                        <input class="form-control form-control-sm" name="credits" type="number" min="1" required
+                          th:value="${s.credits}" th:attr="form=${'updateSubjectForm' + s.id}">
+                      </td>
+
+                      <td>
+                        <select class="form-select form-select-sm" name="active"
+                          th:attr="form=${'updateSubjectForm' + s.id}">
+                          <option value="true" th:selected="${s.active}">Hoạt động</option>
+                          <option value="false" th:selected="${!s.active}">Ngừng sử dụng</option>
+                        </select>
+                      </td>
+
+                      <td class="text-end">
+                        <div class="d-flex justify-content-end gap-2 flex-nowrap">
+                          <button class="btn btn-sm btn-outline-primary" type="submit"
+                            th:attr="form=${'updateSubjectForm' + s.id}">
+                            Cập nhật
                           </button>
-                        </td>
-              </div>
-              </form>
 
-              </tr>
-              <tr th:if="${#lists.isEmpty(subjects)}">
-                <td colspan="5" class="text-center text-muted py-4">Chưa có môn học phù hợp.</td>
-              </tr>
-              </tbody>
-              </table>
+                          <button class="btn btn-sm btn-danger" type="submit"
+                            th:attr="form=${'deleteSubjectForm' + s.id}" onclick="return confirm('Xóa môn học này?');">
+                            Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(subjects)}">
+                      <td colspan="5" class="text-center text-muted py-4">Chưa có môn học phù hợp.</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Các form ẩn để cập nhật/xóa từng dòng, tránh đặt form sai bên trong tr -->
+                <th:block th:each="s : ${subjects}">
+                  <form class="d-none" th:id="${'updateSubjectForm' + s.id}" method="post"
+                    th:action="@{/employee/subjects}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                      th:value="${_csrf.token}">
+                    <input type="hidden" name="id" th:value="${s.id}">
+                  </form>
+
+                  <form class="d-none" th:id="${'deleteSubjectForm' + s.id}" method="post"
+                    th:action="@{/employee/subjects/delete/{id}(id=${s.id})}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                      th:value="${_csrf.token}">
+                  </form>
+                </th:block>
+              </div>
             </div>
           </div>
-        </div>
-  </div>
-  </section>
-  </main>
+      </section>
+    </main>
   </div>
   <script th:src="@{/js/app.js}"></script>
 </body>

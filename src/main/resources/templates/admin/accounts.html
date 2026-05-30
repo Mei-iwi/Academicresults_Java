@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -34,58 +34,85 @@
     color: white;
   }
 
+  .account-card {
+    background: #ffffff;
+  }
+
+  .account-form-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px;
+  }
+
+  .account-section-title {
+    font-size: .95rem;
+    font-weight: 700;
+    color: #1f2937;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 14px;
+  }
+
+  .account-form-box .form-label {
+    min-height: 22px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .account-form-box .form-control,
+  .account-form-box .form-select,
+  .account-form-box .btn {
+    min-height: 40px;
+  }
+
+  .account-help {
+    font-size: .875rem;
+    color: #6b7280;
+    margin: 10px 0 0;
+  }
+
   .admin-table-card .table-responsive {
     overflow-x: auto;
   }
 
-  .table-fixed-nowrap {
-    min-width: 1180px;
+  .account-table {
+    min-width: 1320px;
   }
 
-  .table-fixed-nowrap th,
-  .table-fixed-nowrap td {
-    white-space: nowrap;
+  .account-table th,
+  .account-table td {
     vertical-align: middle;
   }
 
-  .table-fixed-nowrap .text-cell {
-    min-width: 190px;
-    white-space: normal;
+  .account-table .text-cell {
+    min-width: 180px;
   }
 
-  .account-update-form {
-    min-width: 455px;
-    display: flex;
-    align-items: center;
-    gap: .375rem;
-    flex-wrap: nowrap;
-    margin: 0;
+  .account-table .inline-field {
+    min-width: 170px;
   }
 
-  .account-update-form .col {
-    flex: 0 0 auto;
-    width: auto;
+  .account-table .inline-field-sm {
+    min-width: 135px;
   }
 
-  .account-update-form .form-select {
-    width: 132px;
+  .account-table .form-control[readonly] {
+    background-color: #f8fafc;
+    color: #6b7280;
   }
 
-  .account-update-form .btn {
-    white-space: nowrap;
-  }
-
-  .account-action-group {
-    min-width: 330px;
+  .account-actions {
+    min-width: 270px;
     display: flex;
     align-items: center;
     gap: .375rem;
     flex-wrap: nowrap;
   }
 
-  .account-action-group form {
+  .account-actions form {
     margin: 0;
-    flex: 0 0 auto;
   }
 
   .reset-password-form {
@@ -96,34 +123,8 @@
   }
 
   .reset-password-form .form-control {
-    width: 140px;
+    width: 132px;
     flex: 0 0 auto;
-  }
-
-  .account-form-box {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 18px;
-  }
-
-  .account-form-box .form-label {
-    min-height: 24px;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #374151;
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .account-form-box .form-control,
-  .account-form-box .form-select,
-  .account-form-box .btn {
-    min-height: 40px;
-  }
-
-  .account-form-box .form-action {
-    padding-top: 30px;
   }
 </style>
 
@@ -186,7 +187,7 @@
           </div>
         </form>
 
-        <div class="card mb-3">
+        <div class="card account-card mb-3">
           <div class="card-header">
             <strong>Thêm / cập nhật tài khoản</strong>
           </div>
@@ -195,60 +196,82 @@
             <form class="account-form-box" method="post" th:action="@{/admin/accounts}">
               <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-              <!-- Hàng 1 -->
-              <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                  <label class="form-label required">Tên đăng nhập</label>
-                  <input class="form-control" name="username" required maxlength="50">
+              <div class="row g-4">
+                <div class="col-lg-6">
+                  <div class="account-section-title">Thông tin đăng nhập</div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label required">Tên đăng nhập</label>
+                      <input class="form-control" name="username" required maxlength="50">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label required">Mật khẩu</label>
+                      <input class="form-control" name="password" type="password" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label required">Vai trò</label>
+                      <select class="form-select" name="roleCode" required>
+                        <option th:each="role : ${roles}" th:value="${role}"
+                          th:text="${role.name() == 'ADMIN' ? 'Quản trị viên' : (role.name() == 'EMPLOYEE' ? 'Nhân viên giáo vụ' : 'Sinh viên')}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Trạng thái</label>
+                      <select class="form-select" name="enabled">
+                        <option value="true">Hoạt động</option>
+                        <option value="false">Khóa</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="col-md-4">
-                  <label class="form-label required">Mật khẩu</label>
-                  <input class="form-control" name="password" type="password" required>
-                </div>
-
-                <div class="col-md-4">
-                  <label class="form-label required">Vai trò</label>
-                  <select class="form-select" name="roleCode" required>
-                    <option th:each="role : ${roles}" th:value="${role}"
-                      th:text="${role.name() == 'ADMIN' ? 'Quản trị viên' : (role.name() == 'EMPLOYEE' ? 'Nhân viên giáo vụ' : 'Sinh viên')}">
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Hàng 2 -->
-              <div class="row g-3">
-                <div class="col-md-3">
-                  <label class="form-label">Sinh viên</label>
-                  <select class="form-select" name="studentId">
-                    <option value="">Không liên kết</option>
-                    <option th:each="student : ${students}" th:value="${student.id}"
-                      th:text="${student.studentCode + ' - ' + student.fullName}">
-                    </option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label">Nhân viên</label>
-                  <select class="form-select" name="employeeId">
-                    <option value="">Không liên kết</option>
-                    <option th:each="employee : ${employees}" th:value="${employee.id}"
-                      th:text="${employee.employeeCode + ' - ' + employee.fullName}">
-                    </option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label">Trạng thái</label>
-                  <select class="form-select" name="enabled">
-                    <option value="true">Hoạt động</option>
-                    <option value="false">Khóa</option>
-                  </select>
-                </div>
-
-                <div class="col-md-3 form-action">
-                  <button class="btn btn-primary w-100">Lưu tài khoản</button>
+                <div class="col-lg-6">
+                  <div class="account-section-title">Thông tin cá nhân</div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Họ tên</label>
+                      <input class="form-control" name="fullName" maxlength="100">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Email</label>
+                      <input class="form-control" name="email" type="email" maxlength="120">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Số điện thoại</label>
+                      <input class="form-control" name="phone" maxlength="11" pattern="[0-9]{9,11}">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Chức vụ</label>
+                      <input class="form-control" name="position" maxlength="100">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Sinh viên liên kết</label>
+                      <select class="form-select" name="studentId">
+                        <option value="">Không liên kết</option>
+                        <option th:each="student : ${students}" th:value="${student.id}"
+                          th:text="${student.studentCode + ' - ' + student.fullName}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Nhân viên liên kết</label>
+                      <select class="form-select" name="employeeId">
+                        <option value="">Tạo hồ sơ mới</option>
+                        <option th:each="employee : ${employees}" th:value="${employee.id}"
+                          th:text="${employee.employeeCode + ' - ' + employee.fullName}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <p class="account-help">Tài khoản sinh viên lấy thông tin từ hồ sơ sinh viên đã liên kết.</p>
+                      <p class="account-help">Tài khoản giáo vụ có thể chọn nhân viên có sẵn hoặc nhập thông tin để tạo
+                        hồ sơ mới.</p>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary w-100">Lưu tài khoản</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
@@ -258,26 +281,47 @@
         <div class="card admin-table-card">
           <div class="card-header"><strong>Danh sách tài khoản</strong></div>
           <div class="card-body table-responsive">
-            <table class="table table-hover align-middle table-fixed-nowrap">
+            <table class="table table-hover align-middle account-table">
               <thead>
                 <tr>
                   <th>Tên đăng nhập</th>
-                  <th>Người dùng</th>
+                  <th>Người dùng / Họ tên</th>
                   <th>Email</th>
+                  <th>Số điện thoại</th>
                   <th>Vai trò</th>
                   <th>Trạng thái</th>
+                  <th>Chức vụ</th>
                   <th>Cập nhật</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 <tr th:each="account : ${accounts}">
-                  <td th:text="${account.username}"></td>
-                  <td class="text-cell"
-                    th:text="${account.employee != null ? account.employee.fullName : (account.student != null ? account.student.fullName : 'Quản trị hệ thống')}">
+                  <td>
+                    <form th:id="'inlineAccountForm' + ${account.id}" method="post"
+                      th:action="@{/admin/accounts/{id}/inline-update(id=${account.id})}">
+                      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                        th:value="${_csrf.token}">
+                    </form>
+                    <span th:text="${account.username}"></span>
                   </td>
-                  <td class="text-cell"
-                    th:text="${account.employee != null ? account.employee.email : (account.student != null ? account.student.email : '')}">
+                  <td>
+                    <input class="form-control form-control-sm inline-field" name="fullName" maxlength="100"
+                      th:attr="form='inlineAccountForm' + ${account.id}"
+                      th:readonly="${account.role.roleCode.name() == 'STUDENT'}"
+                      th:value="${account.student != null ? account.student.fullName : (account.employee != null ? account.employee.fullName : account.fullName)}">
+                  </td>
+                  <td>
+                    <input class="form-control form-control-sm inline-field" name="email" type="email" maxlength="120"
+                      th:attr="form='inlineAccountForm' + ${account.id}"
+                      th:readonly="${account.role.roleCode.name() == 'STUDENT'}"
+                      th:value="${account.student != null ? account.student.email : (account.employee != null ? account.employee.email : account.email)}">
+                  </td>
+                  <td>
+                    <input class="form-control form-control-sm inline-field-sm" name="phone" maxlength="11"
+                      pattern="[0-9]{9,11}" th:attr="form='inlineAccountForm' + ${account.id}"
+                      th:readonly="${account.role.roleCode.name() == 'STUDENT'}"
+                      th:value="${account.student != null ? account.student.phone : (account.employee != null ? account.employee.phone : account.phone)}">
                   </td>
                   <td><span class="badge bg-primary"
                       th:text="${account.role.roleCode.name() == 'ADMIN' ? 'Quản trị viên' : (account.role.roleCode.name() == 'EMPLOYEE' ? 'Nhân viên giáo vụ' : 'Sinh viên')}"></span>
@@ -287,41 +331,18 @@
                       th:text="${account.enabled} ? 'Hoạt động' : 'Đã khóa'"></span>
                   </td>
                   <td>
-                    <form class="account-update-form" method="post" th:action="@{/admin/accounts}">
-                      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
-                        th:value="${_csrf.token}">
-                      <input type="hidden" name="id" th:value="${account.id}">
-                      <input type="hidden" name="username" th:value="${account.username}">
-                      <input type="hidden" name="enabled" th:value="${account.enabled}">
-                      <div class="col">
-                        <select class="form-select form-select-sm" name="roleCode">
-                          <option th:each="role : ${roles}" th:value="${role}"
-                            th:selected="${account.role.roleCode == role}"
-                            th:text="${role.name() == 'ADMIN' ? 'Quản trị viên' : (role.name() == 'EMPLOYEE' ? 'Nhân viên giáo vụ' : 'Sinh viên')}">
-                          </option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <select class="form-select form-select-sm" name="studentId">
-                          <option value="">Không SV</option>
-                          <option th:each="student : ${students}" th:value="${student.id}"
-                            th:text="${student.studentCode}"
-                            th:selected="${account.student != null and account.student.id == student.id}"></option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <select class="form-select form-select-sm" name="employeeId">
-                          <option value="">Không NV</option>
-                          <option th:each="employee : ${employees}" th:value="${employee.id}"
-                            th:text="${employee.employeeCode}"
-                            th:selected="${account.employee != null and account.employee.id == employee.id}"></option>
-                        </select>
-                      </div>
-                      <div class="col-auto"><button class="btn btn-sm btn-outline-primary">Lưu</button></div>
-                    </form>
+                    <input class="form-control form-control-sm inline-field" name="position" maxlength="100"
+                      th:attr="form='inlineAccountForm' + ${account.id}"
+                      th:readonly="${account.role.roleCode.name() == 'STUDENT'}"
+                      th:value="${account.employee != null ? account.employee.position : account.position}">
                   </td>
                   <td>
-                    <div class="account-action-group">
+                    <button class="btn btn-sm btn-outline-primary"
+                      th:attr="form='inlineAccountForm' + ${account.id}"
+                      th:disabled="${account.role.roleCode.name() == 'STUDENT'}">Cập nhật</button>
+                  </td>
+                  <td>
+                    <div class="account-actions">
                       <form method="post" th:action="@{/admin/accounts/{id}/enabled(id=${account.id})}">
                         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
                           th:value="${_csrf.token}">
@@ -343,12 +364,13 @@
                   </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(accounts)}">
-                  <td colspan="7" class="text-center text-muted">Không có tài khoản phù hợp.</td>
+                  <td colspan="9" class="text-center text-muted">Không có tài khoản phù hợp.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
       </section>
     </main>
   </div>
