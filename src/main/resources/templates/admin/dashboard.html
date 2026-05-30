@@ -18,6 +18,63 @@
     color: white;
     text-decoration: none;
   }
+
+  .topbar {
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .topbar>div {
+    min-width: 0;
+  }
+
+  .topbar .page-title,
+  .topbar .page-subtitle {
+    color: white;
+  }
+
+  .dashboard-table-card .table-responsive {
+    overflow-x: auto;
+  }
+
+  .dashboard-status-table {
+    min-width: 360px;
+  }
+
+  .dashboard-recent-table {
+    min-width: 760px;
+  }
+
+  .dashboard-status-table th,
+  .dashboard-status-table td,
+  .dashboard-recent-table th,
+  .dashboard-recent-table td {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .dashboard-recent-table .text-cell {
+    min-width: 160px;
+    white-space: normal;
+  }
+
+  .mobile-toggle {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .topbar {
+      flex-wrap: wrap;
+      align-items: flex-start !important;
+    }
+
+    .topbar .ms-auto {
+      margin-left: 0 !important;
+      width: 100%;
+      text-align: left !important;
+    }
+  }
 </style>
 
 <body data-role="admin">
@@ -32,7 +89,7 @@
           <div class="sidebar-subtitle">Quản trị viên</div>
         </div>
       </div>
-      <div th:replace="~{layouts/admin-layout :: sidebar('dashboard')}"></div>
+      <div class="sidebar-body" th:replace="~{layouts/admin-layout :: sidebar('dashboard')}"></div>
       <div class="sidebar-footer" th:replace="~{layouts/User :: logout}"></div>
     </aside>
     <main class="main">
@@ -42,7 +99,7 @@
           <h1 class="page-title">Tổng quan quản trị</h1>
           <div class="page-subtitle">Theo dõi dữ liệu chính của hệ thống quản lý kết quả học tập.</div>
         </div>
-        <div class="ms-auto text-end"
+        <div class="ms-auto text-end flex-shrink-0"
           th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
       </header>
       <section class="content">
@@ -79,7 +136,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 mt-3">
             <div class="card metric-card">
               <div class="card-body">
                 <div class="metric-label">Lớp học phần</div>
@@ -87,7 +144,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 mt-3">
             <div class="card metric-card">
               <div class="card-body">
                 <div class="metric-label">Kết quả học tập</div>
@@ -95,7 +152,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 mt-3">
             <div class="card metric-card">
               <div class="card-body">
                 <div class="metric-label">Tài khoản hoạt động</div>
@@ -103,7 +160,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 mt-3">
             <div class="card metric-card">
               <div class="card-body">
                 <div class="metric-label">Tài khoản đã khóa</div>
@@ -112,12 +169,12 @@
             </div>
           </div>
         </div>
-        <div class="row g-3">
-          <div class="col-lg-5">
-            <div class="card">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card dashboard-table-card">
               <div class="card-header"><strong>Trạng thái kết quả</strong></div>
               <div class="card-body table-responsive">
-                <table class="table">
+                <table class="table dashboard-status-table">
                   <tbody>
                     <tr>
                       <td>Nháp</td>
@@ -136,11 +193,11 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-7">
-            <div class="card">
+          <div class="col-lg-5 mt-3 w-100">
+            <div class="card dashboard-table-card">
               <div class="card-header"><strong>Kết quả cập nhật gần đây</strong></div>
               <div class="card-body table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover dashboard-recent-table">
                   <thead>
                     <tr>
                       <th>Sinh viên</th>
@@ -151,8 +208,8 @@
                   </thead>
                   <tbody>
                     <tr th:each="r : ${recentResults}">
-                      <td th:text="${r.student != null ? r.student.studentCode : ''}"></td>
-                      <td th:text="${r.section != null ? r.section.sectionCode : ''}"></td>
+                      <td class="text-cell" th:text="${r.student != null ? r.student.studentCode : ''}"></td>
+                      <td class="text-cell" th:text="${r.section != null ? r.section.sectionCode : ''}"></td>
                       <td th:text="${r.totalScore}"></td>
                       <td
                         th:text="${r.resultStatus == T(com.academicresults.management.Entity.enums.ResultStatus).DRAFT ? 'Nháp' : (r.resultStatus == T(com.academicresults.management.Entity.enums.ResultStatus).PUBLISHED ? 'Đã công bố' : 'Đã khóa')}">

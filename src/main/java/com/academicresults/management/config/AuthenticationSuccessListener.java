@@ -1,6 +1,5 @@
 package com.academicresults.management.config;
 
-import com.academicresults.management.Entity.Account;
 import com.academicresults.management.Repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;

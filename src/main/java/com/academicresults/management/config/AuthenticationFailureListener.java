@@ -1,6 +1,5 @@
 package com.academicresults.management.config;
 
-import com.academicresults.management.Entity.Account;
 import com.academicresults.management.Repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -30,7 +29,8 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
                 if (attempts >= MAX_FAILED_ATTEMPTS) {
                     account.setEnabled(false);
                     account.setLockTime(new Date());
-                    System.out.println("TÀI KHOẢN [" + username + "] ĐÃ BỊ KHÓA DO NHẬP SAI MẬT KHẨU " + MAX_FAILED_ATTEMPTS + " LẦN.");
+                    System.out.println("TÀI KHOẢN [" + username + "] ĐÃ BỊ KHÓA DO NHẬP SAI MẬT KHẨU "
+                            + MAX_FAILED_ATTEMPTS + " LẦN.");
                 }
 
                 accountRepository.save(account);

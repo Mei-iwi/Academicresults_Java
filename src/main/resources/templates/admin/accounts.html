@@ -19,6 +19,112 @@
     color: white;
     text-decoration: none;
   }
+
+  .topbar {
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .topbar>div:first-child {
+    min-width: 0;
+  }
+
+  .topbar .page-title,
+  .topbar .page-subtitle {
+    color: white;
+  }
+
+  .admin-table-card .table-responsive {
+    overflow-x: auto;
+  }
+
+  .table-fixed-nowrap {
+    min-width: 1180px;
+  }
+
+  .table-fixed-nowrap th,
+  .table-fixed-nowrap td {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .table-fixed-nowrap .text-cell {
+    min-width: 190px;
+    white-space: normal;
+  }
+
+  .account-update-form {
+    min-width: 455px;
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    flex-wrap: nowrap;
+    margin: 0;
+  }
+
+  .account-update-form .col {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .account-update-form .form-select {
+    width: 132px;
+  }
+
+  .account-update-form .btn {
+    white-space: nowrap;
+  }
+
+  .account-action-group {
+    min-width: 330px;
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    flex-wrap: nowrap;
+  }
+
+  .account-action-group form {
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  .reset-password-form {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    flex-wrap: nowrap;
+  }
+
+  .reset-password-form .form-control {
+    width: 140px;
+    flex: 0 0 auto;
+  }
+
+  .account-form-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  .account-form-box .form-label {
+    min-height: 24px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .account-form-box .form-control,
+  .account-form-box .form-select,
+  .account-form-box .btn {
+    min-height: 40px;
+  }
+
+  .account-form-box .form-action {
+    padding-top: 30px;
+  }
 </style>
 
 <body data-role="admin">
@@ -28,7 +134,7 @@
         <div class="brand-mark"><img style="width: 50px;height: 50px;border-radius: 100%;" th:src="@{/images/logo.jpg}"
             alt="not found"></div>
         <div>
-          <div class="sidebar-title">Quản lý kết quả</div>
+          <div class="sidebar-title">Quản lý kết quả học tập</div>
           <div class="sidebar-subtitle">Quản trị viên</div>
         </div>
       </div>
@@ -42,7 +148,7 @@
           <h1 class="page-title">Quản lý tài khoản</h1>
           <div class="page-subtitle">Tìm kiếm, tạo tài khoản, đổi vai trò, khóa/mở khóa và đặt lại mật khẩu.</div>
         </div>
-        <div class="ms-auto text-right"
+        <div class="ms-auto text-end flex-shrink-0"
           th:replace="~{layouts/User :: User(${currentUser.displayName}, ${currentUser.roleCode})}"></div>
       </header>
 
@@ -74,67 +180,85 @@
                 <option value="false" th:selected="${selectedEnabled == false}">Đã khóa</option>
               </select>
             </div>
-            <div class="col-md-2">
+            <div style="margin-top: 30px;" class="col-md-2">
               <button class="btn btn-primary w-100">Lọc</button>
             </div>
           </div>
         </form>
 
         <div class="card mb-3">
-          <div class="card-header"><strong>Thêm / cập nhật tài khoản</strong></div>
+          <div class="card-header">
+            <strong>Thêm / cập nhật tài khoản</strong>
+          </div>
+
           <div class="card-body">
-            <form class="row g-3" method="post" th:action="@{/admin/accounts}">
+            <form class="account-form-box" method="post" th:action="@{/admin/accounts}">
               <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-              <div class="col-md-3">
-                <label class="form-label required">Tên đăng nhập</label>
-                <input class="form-control" name="username" required maxlength="50">
+
+              <!-- Hàng 1 -->
+              <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                  <label class="form-label required">Tên đăng nhập</label>
+                  <input class="form-control" name="username" required maxlength="50">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label required">Mật khẩu</label>
+                  <input class="form-control" name="password" type="password" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label required">Vai trò</label>
+                  <select class="form-select" name="roleCode" required>
+                    <option th:each="role : ${roles}" th:value="${role}"
+                      th:text="${role.name() == 'ADMIN' ? 'Quản trị viên' : (role.name() == 'EMPLOYEE' ? 'Nhân viên giáo vụ' : 'Sinh viên')}">
+                    </option>
+                  </select>
+                </div>
               </div>
-              <div class="col-md-3">
-                <label class="form-label required">Mật khẩu</label>
-                <input class="form-control" name="password" type="password" required>
-              </div>
-              <div class="col-md-2">
-                <label class="form-label required">Vai trò</label>
-                <select class="form-select" name="roleCode" required>
-                  <option th:each="role : ${roles}" th:value="${role}"
-                    th:text="${role.name() == 'ADMIN' ? 'Quản trị viên' : (role.name() == 'EMPLOYEE' ? 'Nhân viên giáo vụ' : 'Sinh viên')}">
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Sinh viên</label>
-                <select class="form-select" name="studentId">
-                  <option value="">Không liên kết</option>
-                  <option th:each="student : ${students}" th:value="${student.id}"
-                    th:text="${student.studentCode + ' - ' + student.fullName}"></option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Nhân viên</label>
-                <select class="form-select" name="employeeId">
-                  <option value="">Không liên kết</option>
-                  <option th:each="employee : ${employees}" th:value="${employee.id}"
-                    th:text="${employee.employeeCode + ' - ' + employee.fullName}"></option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Trạng thái</label>
-                <select class="form-select" name="enabled">
-                  <option value="true">Hoạt động</option>
-                  <option value="false">Khóa</option>
-                </select>
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                <button class="btn btn-primary w-100">Lưu tài khoản</button>
+
+              <!-- Hàng 2 -->
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label class="form-label">Sinh viên</label>
+                  <select class="form-select" name="studentId">
+                    <option value="">Không liên kết</option>
+                    <option th:each="student : ${students}" th:value="${student.id}"
+                      th:text="${student.studentCode + ' - ' + student.fullName}">
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Nhân viên</label>
+                  <select class="form-select" name="employeeId">
+                    <option value="">Không liên kết</option>
+                    <option th:each="employee : ${employees}" th:value="${employee.id}"
+                      th:text="${employee.employeeCode + ' - ' + employee.fullName}">
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Trạng thái</label>
+                  <select class="form-select" name="enabled">
+                    <option value="true">Hoạt động</option>
+                    <option value="false">Khóa</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3 form-action">
+                  <button class="btn btn-primary w-100">Lưu tài khoản</button>
+                </div>
               </div>
             </form>
           </div>
         </div>
 
-        <div class="card">
+        <div class="card admin-table-card">
           <div class="card-header"><strong>Danh sách tài khoản</strong></div>
           <div class="card-body table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-hover align-middle table-fixed-nowrap">
               <thead>
                 <tr>
                   <th>Tên đăng nhập</th>
@@ -149,10 +273,10 @@
               <tbody>
                 <tr th:each="account : ${accounts}">
                   <td th:text="${account.username}"></td>
-                  <td
+                  <td class="text-cell"
                     th:text="${account.employee != null ? account.employee.fullName : (account.student != null ? account.student.fullName : 'Quản trị hệ thống')}">
                   </td>
-                  <td
+                  <td class="text-cell"
                     th:text="${account.employee != null ? account.employee.email : (account.student != null ? account.student.email : '')}">
                   </td>
                   <td><span class="badge bg-primary"
@@ -163,7 +287,7 @@
                       th:text="${account.enabled} ? 'Hoạt động' : 'Đã khóa'"></span>
                   </td>
                   <td>
-                    <form class="row g-1" method="post" th:action="@{/admin/accounts}">
+                    <form class="account-update-form" method="post" th:action="@{/admin/accounts}">
                       <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
                         th:value="${_csrf.token}">
                       <input type="hidden" name="id" th:value="${account.id}">
@@ -196,23 +320,26 @@
                       <div class="col-auto"><button class="btn btn-sm btn-outline-primary">Lưu</button></div>
                     </form>
                   </td>
-                  <td class="d-flex flex-wrap gap-1">
-                    <form method="post" th:action="@{/admin/accounts/{id}/enabled(id=${account.id})}">
-                      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
-                        th:value="${_csrf.token}">
-                      <input type="hidden" name="enabled" th:value="${!account.enabled}">
-                      <button class="btn btn-sm" th:classappend="${account.enabled} ? ' btn-secondary' : ' btn-success'"
-                        th:text="${account.enabled} ? 'Khóa' : 'Mở khóa'"></button>
-                    </form>
-                    <form class="d-flex gap-1" method="post"
-                      th:action="@{/admin/accounts/{id}/reset-password(id=${account.id})}">
-                      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
-                        th:value="${_csrf.token}">
-                      <input class="form-control form-control-sm" name="password" type="password"
-                        placeholder="Mật khẩu mới" required style="width:130px">
-                      <button class="btn btn-sm btn-warning"
-                        onclick="return confirm('Đặt lại mật khẩu tài khoản này?');">Đặt lại</button>
-                    </form>
+                  <td>
+                    <div class="account-action-group">
+                      <form method="post" th:action="@{/admin/accounts/{id}/enabled(id=${account.id})}">
+                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                          th:value="${_csrf.token}">
+                        <input type="hidden" name="enabled" th:value="${!account.enabled}">
+                        <button class="btn btn-sm"
+                          th:classappend="${account.enabled} ? ' btn-secondary' : ' btn-success'"
+                          th:text="${account.enabled} ? 'Khóa' : 'Mở khóa'"></button>
+                      </form>
+                      <form class="reset-password-form" method="post"
+                        th:action="@{/admin/accounts/{id}/reset-password(id=${account.id})}">
+                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                          th:value="${_csrf.token}">
+                        <input class="form-control form-control-sm" name="password" type="password"
+                          placeholder="Mật khẩu mới" required>
+                        <button class="btn btn-sm btn-warning"
+                          onclick="return confirm('Đặt lại mật khẩu tài khoản này?');">Đặt lại</button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(accounts)}">
