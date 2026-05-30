@@ -36,6 +36,10 @@ public class DataSeeder implements CommandLineRunner {
             adminAccount.setPasswordHash(passwordEncoder.encode("admin123"));
             adminAccount.setRole(adminRole);
             adminAccount.setEnabled(true);
+            adminAccount.setFullName("Nguyễn Minh Quản trị");
+            adminAccount.setEmail("admin@academic.local");
+            adminAccount.setPhone("0900000000");
+            adminAccount.setPosition("Quản trị hệ thống");
 
             //adminAccount.setSchoolIdentifier("huit");
 

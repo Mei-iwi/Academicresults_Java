@@ -1,12 +1,13 @@
 package com.academicresults.management.Controllers.AdminController;
 
-import com.academicresults.management.Repository.AccountRepository;
-import com.academicresults.management.Repository.StudentResultRepository;
 import com.academicresults.management.Entity.enums.ResultStatus;
 import com.academicresults.management.Entity.enums.RoleCode;
-import com.academicresults.management.Services.AccountService;
+import com.academicresults.management.Repository.AccountRepository;
+import com.academicresults.management.Repository.StudentResultRepository;
 import com.academicresults.management.Services.AcademicCatalogService;
+import com.academicresults.management.Services.AccountService;
 import com.academicresults.management.Services.StudentServices;
+import com.academicresults.management.dto.AccountForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,17 +64,22 @@ public class AdminController {
     }
 
     @PostMapping("/accounts")
-    public String saveAccount(@RequestParam(required = false) Long id,
-                              @RequestParam String username,
-                              @RequestParam(required = false) String password,
-                              @RequestParam RoleCode roleCode,
-                              @RequestParam(required = false) Long studentId,
-                              @RequestParam(required = false) Long employeeId,
-                              @RequestParam(defaultValue = "true") Boolean enabled,
-                              RedirectAttributes redirectAttributes) {
+    public String saveAccount(AccountForm form, RedirectAttributes redirectAttributes) {
         try {
-            accountService.save(id, username, password, roleCode, studentId, employeeId, enabled);
+            accountService.save(form);
             redirectAttributes.addFlashAttribute("successMessage", "Đã lưu tài khoản.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/admin/accounts";
+    }
+
+    @PostMapping("/accounts/{id}/inline-update")
+    public String inlineUpdateAccount(@PathVariable Long id, AccountForm form,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            accountService.inlineUpdate(id, form);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật thông tin tài khoản.");
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
@@ -103,5 +109,4 @@ public class AdminController {
         }
         return "redirect:/admin/accounts";
     }
-
 }

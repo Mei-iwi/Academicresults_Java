@@ -42,6 +42,8 @@ public class GlobalModelAttribute {
             displayName = account.getEmployee().getFullName();
         } else if (account.getStudent() != null) {
             displayName = account.getStudent().getFullName();
+        } else if (org.springframework.util.StringUtils.hasText(account.getFullName())) {
+            displayName = account.getFullName();
         }
         return new CurrentUserInfo(userName, displayName, roleCode);
     }

@@ -29,6 +29,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             left join fetch a.employee e
             where (:keyword is null
                 or lower(a.username) like lower(concat('%', :keyword, '%'))
+                or lower(coalesce(a.fullName, '')) like lower(concat('%', :keyword, '%'))
+                or lower(coalesce(a.email, '')) like lower(concat('%', :keyword, '%'))
                 or lower(coalesce(s.fullName, '')) like lower(concat('%', :keyword, '%'))
                 or lower(coalesce(s.email, '')) like lower(concat('%', :keyword, '%'))
                 or lower(coalesce(e.fullName, '')) like lower(concat('%', :keyword, '%'))
